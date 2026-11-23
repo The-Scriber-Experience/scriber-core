@@ -10,75 +10,154 @@ All primitive color tokens in `scriber-core` are defined in `src/scriber_core/fr
 
 ### 🎨 Complete Primitive Palette Table
 
+Organized by hue family as defined in `COLOR_GROUPS` within `src/scriber_core/frontend/colors.py`.
+
+#### 💚 Greens & Teals (18 colors)
+
 | # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
 | :---: | :--- | :---: | :---: | :--- |
-| **1** | `deep_pine` | `#071a12` | `(7, 26, 18)` | 💚 Deep background / dark forest baseline |
-| **2** | `forest_teal` | `#064e38` | `(6, 78, 56)` | 💚 Deep muted teal / secondary surface |
-| **3** | `pine` | `#059669` | `(5, 150, 105)` | 💚 Medium emerald / verified state |
-| **4** | `success_emerald` | `#10b981` | `(16, 185, 129)` | 💚 **CLI Status**: Success & STEM verified metric |
-| **5** | `ibm_green` | `#309592` | `(48, 149, 146)` | 💚 Muted cyan-green / industrial indicator |
-| **6** | `deep_green` | `#038b00` | `(3, 139, 0)` | 💚 Pure deep green / high-saturation accent |
-| **7** | `neon_green` | `#31ff40` | `(49, 255, 64)` | 💚 High-luminance neon / attention indicator |
-| **8** | `bright_chartreuse` | `#70e000` | `(112, 224, 0)` | 💚 High-contrast lime / mathematical scalar |
-| **9** | `junie_lime` | `#a7c957` | `(167, 201, 87)` | 💚 Soft olive-lime / forest gradient stop |
-| **10** | `pale_mint` | `#b4ffcf` | `(180, 255, 207)` | 💚 Light mint / luminous accent text |
-| **11** | `tropical_teal` | `#03e8bd` | `(3, 232, 189)` | 💚 High-saturation teal / quantum indicator |
-| **12** | `electric_cyan` | `#00ffee` | `(0, 255, 238)` | 🩵 High-energy cyan / `tse-gradient-1` start |
-| **13** | `pure_cyan` | `#00ffff` | `(0, 255, 255)` | 🩵 Pure cyan / full saturation interactive stop |
-| **14** | `bright_cyan` | `#00f0ff` | `(0, 240, 255)` | 🩵 Signature `tse-cyan` / active focus |
-| **15** | `vivid_cyan` | `#00e8ff` | `(0, 232, 255)` | 🩵 **Primary Brand**: Eigenscribe core cyan |
-| **16** | `sky_cyan` | `#4cc9f0` | `(76, 201, 240)` | 🩵 Soft sky cyan / section bullet marker |
-| **17** | `ibm_cyan` | `#2ca9e6` | `(44, 169, 230)` | 🩵 Technical sky blue / documentation accent |
-| **18** | `sky_info` | `#38bdf8` | `(56, 189, 248)` | 🩵 **CLI Status**: Informational / interactive badge |
-| **19** | `ice_blue` | `#b8f6ff` | `(184, 246, 255)` | 🩵 Luminous low-fatigue body text token |
-| **20** | `midnight_navy` | `#06152b` | `(6, 21, 43)` | 💙 Deep cosmic background void |
-| **21** | `deep_ocean_blue` | `#003b73` | `(0, 59, 115)` | 💙 Deep structural substrate / frame fill |
-| **22** | `vivid_blue` | `#0070eb` | `(0, 112, 235)` | 💙 Saturated primary blue / node 4 spectrum |
-| **23** | `eigen_blue` | `#008eff` | `(0, 142, 255)` | 💙 Core eigenscribe intermediate blue stop |
-| **24** | `skyline_blue` | `#0a95eb` | `(10, 149, 235)` | 💙 Intermediate gradient bridge blue |
-| **25** | `vivid_sky_blue` | `#14b5ff` | `(20, 181, 255)` | 💙 Interactive command name & active control |
-| **26** | `electric_blue` | `#00a6ff` | `(0, 166, 255)` | 💙 Quantum status & `electric` gradient start |
-| **27** | `sky_blue` | `#3a98ff` | `(58, 152, 255)` | 💙 Clear sky accent / network node identifier |
-| **28** | `strong_blue` | `#0355e8` | `(3, 85, 232)` | 💙 High-density blue / border accent |
-| **29** | `ibm_indigo` | `#4361ee` | `(67, 97, 238)` | 💙 Crisp periwinkle-indigo / structural link |
-| **30** | `periwinkle_blue` | `#5280ff` | `(82, 128, 255)` | 💙 Frame borders & table box drawing |
-| **31** | `midwest_indigo` | `#6f78fa` | `(111, 120, 250)` | 💙 Signature mid-tone indigo / `STYLE` badge |
-| **32** | `deep_indigo` | `#3a0ca3` | `(58, 12, 163)` | 💙 Deep violet-indigo / shadow highlight |
-| **33** | `deep_plum` | `#120A24` | `(18, 10, 36)` | 💜 Cosmic void purple substrate |
-| **34** | `dark_violet` | `#3b176e` | `(59, 23, 110)` | 💜 Dark purple structural framing |
-| **35** | `electric_violet` | `#5e17eb` | `(94, 23, 235)` | 💜 Core eigenscribe terminal violet stop |
-| **36** | `bright_violet` | `#7c3aed` | `(124, 58, 237)` | 💜 Rotor status & function identifier |
-| **37** | `ibm_purple` | `#844ccc` | `(132, 76, 204)` | 💜 Technical purple / category marker |
-| **38** | `bright_purple` | `#a855f7` | `(168, 85, 247)` | 💜 Signature `tse-purple` / secondary control |
-| **39** | `royal_purple` | `#7209b7` | `(114, 9, 183)` | 💜 Deep royal purple / gradient anchor |
-| **40** | `pale_lilac` | `#d8b4fe` | `(216, 180, 254)` | 💜 Syntax flags, parameters & options |
-| **41** | `black_cherry` | `#210817` | `(33, 8, 23)` | 🩷 Dark magenta shadow background |
-| **42** | `dark_berry` | `#7c174f` | `(124, 23, 79)` | 🩷 Deep berry framing / warning shadow |
-| **43** | `deep_rose` | `#ad1457` | `(173, 20, 87)` | 🩷 Dense rose accent / critical highlight |
-| **44** | `vivid_pink` | `#f72585` | `(247, 37, 133)` | 🩷 Signature `tse-pink` / `TOKEN` badge |
-| **45** | `ibm_pink` | `#fe28a2` | `(254, 40, 162)` | 🩷 Technical pink / secondary gradient stop |
-| **46** | `bright_pink` | `#ff40a1` | `(255, 64, 161)` | 🩷 High-energy pink / sunset terminal stop |
-| **47** | `rose_pink` | `#ff66b3` | `(255, 102, 179)` | 🩷 Soft rose / Node 8 spectrum identifier |
-| **48** | `soft_rose` | `#ff76a1` | `(255, 118, 161)` | 🩷 Auxiliary decorative accent |
-| **49** | `pale_orchid_pink`| `#ffb4f6` | `(255, 180, 246)` | 🩷 High-luminance pink text accent |
-| **50** | `bright_magenta` | `#ff00c3` | `(255, 0, 195)` | 🩷 Pure magenta / network status marker |
-| **51** | `hot_pink` | `#ff007b` | `(255, 0, 123)` | 🩷 Neon hot pink / cyberpunk terminal stop |
-| **52** | `error_crimson` | `#d7263d` | `(215, 38, 61)` | ❤️ **CLI Status**: Error / critical alert |
-| **53** | `dusty_peach` | `#e7a697` | `(231, 166, 151)` | 🧡 Soft neutral coral / low-fatigue indicator |
-| **54** | `soft_coral` | `#f77f64` | `(247, 127, 100)` | 🧡 Auxiliary warm indicator |
-| **55** | `peach_coral` | `#f79764` | `(247, 151, 100)` | 🧡 Mid-tone warm highlight |
-| **56** | `tangerine` | `#ff8855` | `(255, 136, 85)` | 🧡 High-visibility amber-orange |
-| **57** | `coral_orange` | `#ff783d` | `(255, 120, 61)` | 🧡 Dynamic parameter & high-attention accent |
-| **58** | `apricot` | `#ff9d57` | `(255, 157, 87)` | 🧡 Warm golden apricot / plot cycle stop |
-| **59** | `golden_amber` | `#feb639` | `(254, 182, 57)` | 💛 Warm golden accent / Node 5 spectrum |
-| **60** | `warning_amber` | `#f7c548` | `(247, 197, 72)` | 💛 **CLI Status**: Warning / `DIAG` badge |
-| **61** | `ibm_black` | `#161616` | `(22, 22, 22)` | 🖤 Standard deep dark background |
-| **62** | `ibm_gray` | `#262625` | `(38, 38, 37)` | 🖤 Neutral gray dark surface |
-| **63** | `charcoal` | `#1e293b` | `(30, 41, 59)` | 🖤 Surface elevated background fill |
-| **64** | `granite` | `#264653` | `(38, 70, 83)` | 🖤 Forest baseline dark anchor stop |
-| **65** | `slate` | `#64748b` | `(100, 116, 139)` | 🤍 Neutral muted label & gridline token |
-| **66** | `ibm_white` | `#f4f4f4` | `(244, 244, 244)` | 🤍 High-contrast light foreground |
-| **67** | `ghost_white` | `#f8fafc` | `(248, 250, 252)` | 🤍 Clean white primary text foreground |
+| **1** | `deep_pine` | `#071a12` | `(7, 26, 18)` | Deep background / dark forest baseline |
+| **2** | `forest_teal` | `#064e38` | `(6, 78, 56)` | Deep muted teal / secondary surface |
+| **3** | `green_dark` | `#035100` | `(3, 81, 0)` | Dark pure green / structural baseline |
+| **4** | `pine` | `#059669` | `(5, 150, 105)` | Medium emerald / verified state |
+| **5** | `success_emerald` | `#10b981` | `(16, 185, 129)` | **CLI Status**: Success & STEM verified metric |
+| **6** | `ibm_green` | `#309592` | `(48, 149, 146)` | Muted cyan-green / industrial indicator |
+| **7** | `deep_green` | `#038b00` | `(3, 139, 0)` | Pure deep green / high-saturation accent |
+| **8** | `node-9` | `#00c853` | `(0, 200, 83)` | Sephirah Node 9 / vivid emerald green |
+| **9** | `brigh_green` | `#28d728` | `(40, 215, 40)` | Bright pure green / high-energy accent |
+| **10** | `neon_green` | `#30ff40` | `(48, 255, 64)` | High-luminance neon / attention indicator |
+| **11** | `slime_green` | `#31ff48` | `(49, 255, 72)` | Neon chartreuse-green / cyberpunk accent |
+| **12** | `bright_chartreuse` | `#70e000` | `(112, 224, 0)` | High-contrast lime / mathematical scalar |
+| **13** | `junie_lime` | `#a7c957` | `(167, 201, 87)` | Soft olive-lime / forest gradient stop |
+| **14** | `pale_mint` | `#b4ffcf` | `(180, 255, 207)` | Light mint / luminous accent text |
+| **15** | `green_light` | `#57ffbc` | `(87, 255, 188)` | Luminous mint-green / high-visibility accent |
+| **16** | `green_jade` | `#00ff7f` | `(0, 255, 127)` | Spring green / pure spectral midpoint |
+| **17** | `tropical_teal` | `#03e8bd` | `(3, 232, 189)` | High-saturation teal / quantum indicator |
+| **18** | `cyan_green` | `#00f5d4` | `(0, 245, 212)` | Turquoise / aquamarine bridge to cyan |
+
+#### 🩵 Cyans & Light Blues (13 colors)
+
+| # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
+| :---: | :--- | :---: | :---: | :--- |
+| **19** | `electric_lagoon` | `#1ef6eb` | `(30, 246, 235)` | Bright cyan-teal / lagoon gradient stop |
+| **20** | `electric_cyan` | `#00ffee` | `(0, 255, 238)` | High-energy cyan / `tse-gradient-1` start |
+| **21** | `node-1` | `#00ffff` | `(0, 255, 255)` | Sephirah Node 1 / pure cyan full saturation |
+| **22** | `bright_cyan` | `#00f0ff` | `(0, 240, 255)` | Signature `tse-cyan` / active focus |
+| **23** | `node-2` | `#00e8ff` | `(0, 232, 255)` | Sephirah Node 2 / `tse-gradient-2` start |
+| **24** | `reef_cyan` | `#1ed9f6` | `(30, 217, 246)` | Soft cyan / reef gradient stop |
+| **25** | `azure_splash` | `#1eb2f6` | `(30, 178, 246)` | Azure blue-cyan / sky transition |
+| **26** | `node-3` | `#14b5ff` | `(20, 181, 255)` | Sephirah Node 3 / `tse-gradient-1` stop |
+| **27** | `ibm_cyan` | `#2ca9e6` | `(44, 169, 230)` | Technical sky blue / documentation accent |
+| **28** | `sky_info` | `#38bdf8` | `(56, 189, 248)` | **CLI Status**: Informational / interactive badge |
+| **29** | `sky_cyan` | `#4cc9f0` | `(76, 201, 240)` | Soft sky cyan / section bullet marker |
+| **30** | `ice_blue` | `#b8f6ff` | `(184, 246, 255)` | Luminous low-fatigue body text token |
+
+#### 💙 Blues & Indigos (20 colors)
+
+| # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
+| :---: | :--- | :---: | :---: | :--- |
+| **31** | `midnight_navy` | `#06152b` | `(6, 21, 43)` | Deep cosmic background void |
+| **32** | `deep_ocean_blue` | `#003b73` | `(0, 59, 115)` | Deep structural substrate / frame fill |
+| **33** | `node-4` | `#0070eb` | `(0, 112, 235)` | Sephirah Node 4 / royal cobalt |
+| **34** | `eigen_blue` | `#008eff` | `(0, 142, 255)` | Core eigenscribe intermediate blue stop |
+| **35** | `cerulean_surge` | `#1e8af6` | `(30, 138, 246)` | Cerulean blue / gradient bridge |
+| **36** | `skyline_blue` | `#0a95eb` | `(10, 149, 235)` | Intermediate gradient bridge blue |
+| **37** | `electric_blue` | `#00a6ff` | `(0, 166, 255)` | Quantum status & `electric` gradient start |
+| **38** | `sky_blue` | `#3a98ff` | `(58, 152, 255)` | Clear sky accent / network node identifier |
+| **39** | `cornflower` | `#1e7bf6` | `(30, 123, 246)` | Cornflower blue / mid-tone accent |
+| **40** | `azure_sky` | `#1e6ff6` | `(30, 111, 246)` | Azure sky / deep blue transition |
+| **41** | `royal_blue` | `#1e62f6` | `(30, 98, 246)` | Royal blue / high-density accent |
+| **42** | `harbor_blue` | `#1e64f6` | `(30, 100, 246)` | Harbor blue / structural link |
+| **43** | `strong_blue` | `#0355e8` | `(3, 85, 232)` | High-density blue / border accent |
+| **44** | `twilight_indigo` | `#1e3bf6` | `(30, 59, 246)` | Twilight indigo / deep violet-blue |
+| **45** | `dusk_violet_blue` | `#291ef6` | `(41, 30, 246)` | Dusk violet-blue / purple transition |
+| **46** | `midnight_indigo` | `#1e22f6` | `(30, 34, 246)` | Midnight indigo / deepest blue-violet |
+| **47** | `ibm_indigo` | `#4361ee` | `(67, 97, 238)` | Crisp periwinkle-indigo / structural link |
+| **48** | `periwinkle_blue` | `#5280ff` | `(82, 128, 255)` | Frame borders & table box drawing |
+| **49** | `midwest_indigo` | `#6f78fa` | `(111, 120, 250)` | Signature mid-tone indigo / `STYLE` badge |
+| **50** | `deep_indigo` | `#3a0ca3` | `(58, 12, 163)` | Deep violet-indigo / shadow highlight |
+
+#### 💜 Purples & Violets (18 colors)
+
+| # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
+| :---: | :--- | :---: | :---: | :--- |
+| **51** | `deep_plum` | `#120a24` | `(18, 10, 36)` | Cosmic void purple substrate |
+| **52** | `dark_violet` | `#3b176e` | `(59, 23, 110)` | Dark purple structural framing |
+| **53** | `deep_iris` | `#3b1ef6` | `(59, 30, 246)` | Deep iris violet / gradient anchor |
+| **54** | `cosmic_violet` | `#4b1ef6` | `(75, 30, 246)` | Cosmic violet / deep-space accent |
+| **55** | `cosmic_iris` | `#501ef6` | `(80, 30, 246)` | Cosmic iris / nebula gradient stop |
+| **56** | `node-7` | `#5e17eb` | `(94, 23, 235)` | Sephirah Node 7 / deep violet |
+| **57** | `deep_purple` | `#7c5cff` | `(124, 92, 255)` | Deep purple / high-saturation accent |
+| **58** | `node-6` | `#7952f5` | `(121, 82, 245)` | Sephirah Node 6 / electric purple |
+| **59** | `nebula_purple` | `#781ef6` | `(120, 30, 246)` | Nebula purple / cosmic gradient stop |
+| **60** | `bright_violet` | `#7c3aed` | `(124, 58, 237)` | Rotor status & function identifier |
+| **61** | `amethyst` | `#7c1ef6` | `(124, 30, 246)` | Amethyst violet / gemstone accent |
+| **62** | `ibm_purple` | `#844ccc` | `(132, 76, 204)` | Technical purple / category marker |
+| **63** | `royal_purple` | `#7209b7` | `(114, 9, 183)` | Deep royal purple / gradient anchor |
+| **64** | `bright_purple` | `#a855f7` | `(168, 85, 247)` | Signature `tse-purple` / secondary control |
+| **65** | `neon_orchid` | `#a01ef6` | `(160, 30, 246)` | Neon orchid / high-energy violet |
+| **66** | `studio_purple` | `#9c1ef6` | `(156, 30, 246)` | Studio purple / design tool accent |
+| **67** | `vivid_orchid` | `#bc1ef6` | `(188, 30, 246)` | Vivid orchid / luminous violet-pink |
+| **68** | `pale_lilac` | `#d8b4fe` | `(216, 180, 254)` | Syntax flags, parameters & options |
+
+#### 🩷 Pink & Berries (9 colors)
+
+| # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
+| :---: | :--- | :---: | :---: | :--- |
+| **69** | `black_cherry` | `#210817` | `(33, 8, 23)` | Dark magenta shadow background |
+| **70** | `dark_berry` | `#7c174f` | `(124, 23, 79)` | Deep berry framing / warning shadow |
+| **71** | `deep_rose` | `#ad1457` | `(173, 20, 87)` | Dense rose accent / critical highlight |
+| **72** | `vivid_pink` | `#f72585` | `(247, 37, 133)` | Signature `tse-pink` / `TOKEN` badge |
+| **73** | `ibm_pink` | `#fe28a2` | `(254, 40, 162)` | Technical pink / secondary gradient stop |
+| **74** | `bright_pink` | `#ff40a1` | `(255, 64, 161)` | High-energy pink / sunset terminal stop |
+| **75** | `node-8` | `#ff66b3` | `(255, 102, 179)` | Sephirah Node 8 / neon hot pink |
+| **76** | `soft_rose` | `#ff76a1` | `(255, 118, 161)` | Auxiliary decorative accent |
+| **77** | `pale_orchid_pink` | `#ffb4f6` | `(255, 180, 246)` | High-luminance pink text accent |
+
+#### ❤️ Magentas & Reds (5 colors)
+
+| # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
+| :---: | :--- | :---: | :---: | :--- |
+| **78** | `heliotrope` | `#dd1ef6` | `(221, 30, 246)` | Heliotrope magenta / vivid purple-pink |
+| **79** | `neon_magenta` | `#f61eef` | `(246, 30, 239)` | Neon magenta / cyberpunk accent |
+| **80** | `bright_magenta` | `#ff00c3` | `(255, 0, 195)` | Pure magenta / network status marker |
+| **81** | `hot_pink` | `#ff007b` | `(255, 0, 123)` | Neon hot pink / cyberpunk terminal stop |
+| **82** | `error_crimson` | `#d7263d` | `(215, 38, 61)` | **CLI Status**: Error / critical alert |
+
+#### 🧡 Oranges & Corals (11 colors)
+
+| # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
+| :---: | :--- | :---: | :---: | :--- |
+| **83** | `dusty_peach` | `#e7a697` | `(231, 166, 151)` | Soft neutral coral / low-fatigue indicator |
+| **84** | `soft_coral` | `#f77f64` | `(247, 127, 100)` | Auxiliary warm indicator |
+| **85** | `orange_soft` | `#f78166` | `(247, 129, 102)` | Soft orange / warm gradient stop |
+| **86** | `peach_coral` | `#f79764` | `(247, 151, 100)` | Mid-tone warm highlight |
+| **87** | `tangerine` | `#ff8855` | `(255, 136, 85)` | High-visibility amber-orange |
+| **88** | `coral_orange` | `#ff783d` | `(255, 120, 61)` | Dynamic parameter & high-attention accent |
+| **89** | `apricot` | `#ff9d57` | `(255, 157, 87)` | Warm golden apricot / plot cycle stop |
+| **90** | `golden_amber` | `#feb639` | `(254, 182, 57)` | Warm golden accent / Node 5 spectrum |
+| **91** | `warning_amber` | `#f7c548` | `(247, 197, 72)` | **CLI Status**: Warning / `DIAG` badge |
+| **92** | `node-5` | `#ffd94a` | `(255, 217, 74)` | Sephirah Node 5 / radiant amber gold |
+| **93** | `yellow_orange` | `#ffd166` | `(255, 209, 102)` | Yellow-orange / warm highlight |
+
+#### 🖤 Neutrals (14 colors)
+
+| # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
+| :---: | :--- | :---: | :---: | :--- |
+| **94** | `ibm_black` | `#161616` | `(22, 22, 22)` | Standard deep dark background |
+| **95** | `dark_slate` | `#0d1117` | `(13, 17, 23)` | Deepest slate / GitHub dark baseline |
+| **96** | `card_black` | `#161b22` | `(22, 27, 34)` | Card surface / elevated dark panel |
+| **97** | `grid_gray` | `#21262d` | `(33, 38, 45)` | Grid line / subtle dark separator |
+| **98** | `ibm_gray` | `#262625` | `(38, 38, 37)` | Neutral gray dark surface |
+| **99** | `border_gray` | `#30363d` | `(48, 54, 61)` | Border line / panel divider |
+| **100** | `charcoal` | `#1e293b` | `(30, 41, 59)` | Surface elevated background fill |
+| **101** | `granite` | `#264653` | `(38, 70, 83)` | Forest baseline dark anchor stop |
+| **102** | `slate` | `#64748b` | `(100, 116, 139)` | Neutral muted label & gridline token |
+| **103** | `text_muted` | `#8b949e` | `(139, 148, 158)` | Muted text / secondary label |
+| **104** | `text_white` | `#e6edf3` | `(230, 237, 243)` | Primary text foreground / high contrast |
+| **105** | `ibm_white` | `#f4f4f4` | `(244, 244, 244)` | High-contrast light foreground |
+| **106** | `ghost_white` | `#f8fafc` | `(248, 250, 252)` | Clean white primary text foreground |
+| **107** | `node-0` | `#fff9d6` | `(255, 249, 214)` | Sephirah Node 0 / crown divine white-gold |
 
 ---
 
@@ -90,16 +169,17 @@ All multi-stop TrueColor gradients in `src/scriber_core/frontend/gradients.py` s
 
 | Preset Key | Hex Stop Sequence | Keyframe Color Names | Primary Mathematical / Design Role |
 | :--- | :--- | :--- | :--- |
-| **`eigenscribe`** | `#00e8ff` → `#008eff` → `#6f78fa` → `#5e17eb` | `vivid_cyan` → `eigen_blue` → `midwest_indigo` → `electric_violet` | **Signature Eigenscribe Gradient**: CLI banners, headers, and major section titles |
-| **`tse-gradient-1`** | `#00ffee` → `#00e8ff` → `#14b5ff` | `electric_cyan` → `vivid_cyan` → `vivid_sky_blue` | **Cyan Flow**: High-luminance interactive controls and telemetry monitors |
-| **`tse-gradient-2`** | `#00e8ff` → `#14b5ff` → `#0a95eb` → `#0070eb` → `#5e17eb` | `vivid_cyan` → `vivid_sky_blue` → `skyline_blue` → `vivid_blue` → `electric_violet` | **Deep Spectrum**: Extended 5-stop gradient for wide terminal displays and plots |
+| **`eigenscribe`** | `#00e8ff` → `#008eff` → `#6f78fa` → `#5e17eb` | `node-2` → `eigen_blue` → `midwest_indigo` → `node-7` | **Signature Eigenscribe Gradient**: CLI banners, headers, and major section titles |
+| **`tse-gradient-1`** | `#1ef6eb` → `#1ed9f6` → `#1eb2f6` → `#1e8af6` → `#1e64f6` → `#1e3bf6` → `#291ef6` → `#501ef6` → `#781ef6` → `#a01ef6` | `electric_lagoon` → `reef_cyan` → `azure_splash` → `cerulean_surge` → `harbor_blue` → `twilight_indigo` → `dusk_violet_blue` → `cosmic_iris` → `nebula_purple` → `neon_orchid` | **10-Stop Cosmic Flow**: Full spectrum cyan-to-violet gradient for wide terminal displays |
+| **`tse-gradient-2`** | `#00e8ff` → `#14b5ff` → `#0a95eb` → `#008eff` → `#5e17eb` | `node-2` → `node-3` → `skyline_blue` → `eigen_blue` → `node-7` | **Deep Spectrum**: Extended 5-stop gradient for plots and telemetry |
 | **`electric`** | `#00a6ff` → `#a855f7` → `#ff00c3` | `electric_blue` → `bright_purple` → `bright_magenta` | **Signature Electric**: High-contrast cybernetic headings and brand banners |
 | **`sunset`** | `#ff783d` → `#f7c548` → `#ff40a1` | `coral_orange` → `warning_amber` → `bright_pink` | **Solar Sunset**: Dynamic execution telemetry, heat warnings, and benchmarks |
 | **`forest`** | `#a7c957` → `#03e8bd` → `#264653` | `junie_lime` → `tropical_teal` → `granite` | **Deep Forest**: Numerical simulations, environmental metrics, and ecology models |
-| **`midnight`** | `#38bdf8` → `#6f78fa` → `#ff66b3` | `sky_info` → `midwest_indigo` → `rose_pink` | **Midnight Cosmic**: Astrodynamics, phase topologies, and deep-space metrics |
-| **`aurora`** | `#03e8bd` → `#10b981` → `#70e000` | `tropical_teal` → `success_emerald` → `bright_chartreuse` | **Quantum Aurora**: Energy fields, spectral analysis, and optimal convergence |
-| **`cyberpunk`** | `#00f0ff` → `#5e17eb` → `#ff007b` | `bright_cyan` → `electric_violet` → `hot_pink` | **Cyberpunk Neon**: High-attention diagnostic flags, overrides, and stress states |
-| **`purple_gradient`** | `#7209b7` → `#a855f7` → `#7c3aed` | `royal_purple` → `bright_purple` → `bright_violet` | **Royal Violet**: Architectural submodules, structural layers, and mathematics |
+| **`midnight`** | `#38bdf8` → `#6f78fa` → `#ff66b3` | `sky_info` → `midwest_indigo` → `node-8` | **Midnight Cosmic**: Astrodynamics, phase topologies, and deep-space metrics |
+| **`cyberpunk`** | `#00f0ff` → `#5e17eb` → `#ff007b` | `bright_cyan` → `node-7` → `hot_pink` | **Cyberpunk Neon**: High-attention diagnostic flags, overrides, and stress states |
+| **`blue_gradient`** | `#00e8ff` → `#14b5ff` → `#008eff` → `#0355e8` | `node-2` → `node-3` → `eigen_blue` → `strong_blue` | **Blue Spectrum**: Monochromatic blue gradient for structural elements |
+| **`green_gradient`** | `#03e8bd` → `#10b981` → `#70e000` → `#00c853` | `tropical_teal` → `success_emerald` → `bright_chartreuse` → `node-9` | **Quantum Aurora**: Energy fields, spectral analysis, and optimal convergence |
+| **`purple_gradient`** | `#7209b7` → `#a855f7` → `#7c3aed` → `#5e17eb` | `royal_purple` → `bright_purple` → `bright_violet` → `node-7` | **Royal Violet**: Architectural submodules, structural layers, and mathematics |
 
 ---
 
@@ -135,7 +215,7 @@ A comprehensive utilitarian review of design token architecture and styling subs
 
 ### 🌟 The Good
 1. **Single Source of Truth (`COLOR_PALETTE`)**:
-   - Centralizing all 67 named color definitions in `src/scriber_core/frontend/colors.py` guarantees repo-wide color fidelity across terminal CLIs, Matplotlib plots, Seaborn colormaps, dark-mode Mermaid diagrams, and CSS tokens.
+   - Centralizing all 107 named color definitions in `src/scriber_core/frontend/colors.py` guarantees repo-wide color fidelity across terminal CLIs, Matplotlib plots, Seaborn colormaps, dark-mode Mermaid diagrams, and CSS tokens.
 2. **Mathematical Golden Ratio ($\phi$) Gradient Proportioning**:
    - Stop positions computed via $w_k = (1/\phi)^k$ eliminate arbitrary gradient banding, anchoring visual attention on high-luminance blue/cyan focal points while smoothly tapering into deep purple/pink accents.
 3. **Robust Separation of Concerns**:

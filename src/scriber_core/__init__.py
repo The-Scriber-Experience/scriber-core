@@ -19,7 +19,7 @@ from typing import Final
 from . import frontend
 from . import cli
 
-__version__: Final[str] = "1.0.0"
+__version__: Final[str] = "1.0.2"
 
 __all__: list[str] = [
     "__version__",
