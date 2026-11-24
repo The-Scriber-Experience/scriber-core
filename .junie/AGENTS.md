@@ -39,7 +39,7 @@ All paths are relative to the project root. Agents must consult these before any
 | `docs/COOP_blog` | `docs/COOP_blog/Using the json-SCHEMA standard for scientific applications_ · The COOP Blog.html` | JSON Schema validation, fail-fast boundary enforcement, and parameter self-documentation for scientific input decks. |
 | `src/frontend` | `src/frontend/the_scriber_experience/style/gradient_presets.py` | ANSI TrueColor multi-stop linear RGB gradient engine and color-stop presets. |
 | `src/frontend` | `src/frontend/colors.py` | ANSI 256-color terminal palette, semantic level messaging, and CLI styling helpers. |
-| `boilerplates` | `boilerplates/python/gold-standard.py` | Gold standard reference script template implementing mathematical simulation, explicit type annotations, shape assertions, deterministic RNG, and smoke testing. |
+| `boilerplates` | `../boilerplates/python/cli_boilerplate.py` | Gold standard reference script template implementing mathematical simulation, explicit type annotations, shape assertions, deterministic RNG, and smoke testing. |
 | `src/frontend` | `src/frontend/the_scriber_experience/plots/theme.py` | Generalizable visualization bootstrapping script for Matplotlib, Pyplot, and Seaborn with high-contrast curves, deep cosmic void palettes, and 6-style heatmaps. |
 | `boilerplates` | `boilerplates/css/tse-boilerplate.css` | Gold standard reference stylesheet implementing the full 4-layer taxonomy, CSS tokens, cosmic radial gradients, Sephirah labels, glassmorphism components, and responsive layouts. |
 | `boilerplates` | `boilerplates/notebooks/visuals-boilerplate.ipynb` | Gold standard reference notebook template for scientific visualization, NetworkX graph topologies, dashboards, and design token / colormap palettes. |
