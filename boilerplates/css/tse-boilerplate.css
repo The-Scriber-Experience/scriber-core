@@ -30,6 +30,9 @@
   --color-bg-cosmic: #050812;
   --color-bg-cosmic-void: #000000;
   --gradient-cosmic-radial: radial-gradient(circle at center, var(--color-bg-cosmic-center) 0%, var(--color-bg-cosmic) 60%, var(--color-bg-cosmic-void) 100%);
+  /* When copying this stylesheet, retain the asset path or override this URL. */
+  --background-wisp: url("../../assets/images/wisp.jpg");
+  --background-wisp-overlay: linear-gradient(rgba(5, 8, 18, 0.72), rgba(5, 8, 18, 0.84));
 
   /* --- Text & Specular Accent Tokens --- */
   --color-text: #f0f6fc;
@@ -93,7 +96,10 @@
 
 body {
   background-color: var(--color-bg);
-  background-image: var(--gradient-cosmic-radial);
+  background-image: var(--background-wisp-overlay), var(--background-wisp), var(--gradient-cosmic-radial);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-body);
@@ -165,7 +171,26 @@ code, pre, kbd, samp {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.portfolio-page {
+  padding-top: clamp(var(--space-xl), 8vw, var(--space-2xl));
+  padding-bottom: var(--space-2xl);
+}
+
+.portfolio-hero {
+  max-width: 760px;
+  margin: 0 auto var(--space-2xl);
+  text-align: center;
+}
+
+.portfolio-section {
+  margin-top: var(--space-xl);
+}
+
 @media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
+
   .grid-cols-2, .grid-cols-3 {
     grid-template-columns: 1fr;
   }
@@ -182,9 +207,13 @@ code, pre, kbd, samp {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: var(--space-lg);
+  padding: clamp(var(--space-lg), 3vw, var(--space-xl));
   box-shadow: var(--shadow-md);
   transition: var(--transition-smooth);
+}
+
+.card-glass > * + * {
+  margin-top: var(--space-md);
 }
 
 .card-glass:hover {
@@ -202,12 +231,31 @@ code, pre, kbd, samp {
   font-weight: bold;
 }
 
+/* Portfolio Headings */
+.portfolio-hero h1 {
+  font-size: clamp(2.2rem, 6vw, 3.5rem);
+  margin-bottom: var(--space-md);
+}
+
+.portfolio-hero p {
+  color: var(--color-text-accent);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+}
+
+.portfolio-section-title {
+  display: block;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  margin-bottom: var(--space-xl);
+  text-align: center;
+}
+
 /* Action Buttons */
 .btn-eigenscribe {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--gradient-eigenscribe);
+  background-size: 200% 100%;
   color: var(--color-bg);
   font-weight: 700;
   padding: var(--space-sm) var(--space-lg);
@@ -220,6 +268,7 @@ code, pre, kbd, samp {
 }
 
 .btn-eigenscribe:hover {
+  background-position: right center;
   box-shadow: var(--shadow-glow-cyan);
   transform: translateY(-2px);
 }
@@ -232,4 +281,14 @@ code, pre, kbd, samp {
   padding: var(--space-md);
   overflow-x: auto;
   font-size: 0.875rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-glass, .btn-eigenscribe {
+    transition: none;
+  }
+
+  .card-glass:hover, .btn-eigenscribe:hover {
+    transform: none;
+  }
 }

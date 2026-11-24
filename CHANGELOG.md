@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Corrected CLI message and palette colors to use canonical TrueColor values, fixed gradient preview and banner options, and enabled Windows VT mode with pointer-sized console handles.
 - Configured UTF-8 for Windows MSYS pipe output unless `PYTHONIOENCODING` is explicitly set, and warned when an MSYS terminal uses Click older than 8.5; documented UCRT64 activation and separate-environment guidance.
 
+## [2.0.1] - 2026-11-24
+
+### Changed
+- Renamed the visual styling skill to `tse-visual-styling` and aligned its guidance with The Scriber Experience (TSE), Eigenscribe, and `scriber-core` terminology.
+
 ## [1.0.2] - 2026-11-23
 
 ### Added

@@ -42,6 +42,11 @@
 - [ ] Diagnose and verify CLI ANSI/TrueColor rendering in Git Bash.
   - [ ] Reproduce with the installed `eigenscribe` command in an interactive Git Bash terminal.
   - [ ] Confirm help, gradients, and color swatches render correctly after any fix.
+- [ ] Continue refining the portfolio-inspired TSE styling and layout in `boilerplates/css/tse-boilerplate.css` and `preview.html`.
+  - [ ] Update the buttons.
+  - [ ] Use Aclonica for all text.
+  - [ ] Give the panels a glassmorphic effect.
+  - [ ] Add a header and footer.
 ---
 - [ ] Create a minimal theme generator `src` folder using best practices and includes a way to...
   - [ ] Create repo-specific color pallette and gradient generators using `@src/frontend/colors.py` and 
@@ -53,8 +58,8 @@
       - [x] Gradients defined in `@src/frontend/gradients.py` as previewable gradients.
           - => Prints gradient of squares OR prints table of colors (referenced from @src/frontend/colors.py) 
             corresponding to `GRADIENT_PRESETS` gradient (via `python -m cli gradient` and `python -m cli colors-table`).
-    - [ ] Exhaustive preview og repo-specific theme colors and gradients => prints a table OR prints
-  - [ ] Rename @src/cli/colors.py so it does not get confused with @src/frontend/colors.py. 
+    - [ ] Exhaustive preview og repo-specific theme colors and gradients => prints a table OR prints 'cli bars'
+  - [x] Rename @src/cli/colors.py so it does not get confused with @src/frontend/colors.py. 
      - **Steps:**
        - Check @src/cli/colors.py for any functions that could be used in context outside of cli development. If there
          are any non-cli-specific styling functions, remove them from @src/cli/colors.py and add them to 

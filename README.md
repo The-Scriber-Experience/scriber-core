@@ -55,8 +55,8 @@ Welcome to the canonical environment index for autonomous development agents. Th
 ├── .junie/
 │   ├── AGENTS.md                     # Canonical agent guidelines & workspace directives
 │   └── skills/
-│       └── cosmic-visual-styling/    # Workspace skill for EIGEN / cosmic visual themes & styling
-├── pyproject.toml                    # PyPI packaging & uv dependency configuration (v2.0.0)
+│       └── tse-visual-styling/       # Workspace skill for The Scriber Experience (TSE) visual system
+├── pyproject.toml                    # PyPI packaging & uv dependency configuration (v2.0.1)
 └── README.md                         # Master onboarding index (This file)
 ```
 
