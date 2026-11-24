@@ -37,7 +37,7 @@
   - [x] Reorganized tests directory into `tests/unit/` and `tests/func/` subdirectories.
   - [x] Created `tests/conftest.py` for shared pytest fixtures.
   - [x] Verified COOP blog HTML files are properly located in `docs/COOP_blog/`.
-- [ ] Create pypi project named `scriber-core`.
+- [x] Create pypi project named `scriber-core`.
 - [ ] Install `scriber-core` as a dependency in `@.junie/AGENTS.md`.
 - [ ] Diagnose and verify CLI ANSI/TrueColor rendering in Git Bash.
   - [ ] Reproduce with the installed `eigenscribe` command in an interactive Git Bash terminal.
@@ -73,9 +73,9 @@
 - [ ] Repo-wide consistency check (regarding @docs/workspace-setup-guide.md standards/constraints). Provide a report of
   the good, the bad, and the ugly.
 ---
-- [ ] Install `scriber-core` in `kuramoto-benchmark-suite`
+- [x] Install `scriber-core` in `kuramoto-benchmark-suite`
   - [ ] Test cactus-style packaging and cli 
     - [ ] Try using `scriber-core` to remove 'code noise' from problem 16 
       jupyter notebook.
-    - [ ] Try updating `kuramoto-benchmark-suite` cli so that it implements `scriber-core/src/cli/..` and 
+    - [x] Try updating `kuramoto-benchmark-suite` cli so that it implements `scriber-core/src/cli/..` and 
       @src/frontend/colors.py & @src/frontend/gradients.py personalization functionality

@@ -17,7 +17,7 @@ In GitHub repository settings, create an environment named `pypi`. Optionally re
 
 ## Before a release
 
-For this `2.0.0` breaking release, verify that the `CHANGELOG.md` describes the `scriber_core` → `eigenscribe` import migration. Before making the release commit, move the completed notes from `[Unreleased]` under `[2.0.0] - YYYY-MM-DD`, then create a fresh `[Unreleased]` section. Also confirm `pyproject.toml` and `src/eigenscribe/__init__.py` have the same version; the frontend and CLI versions derive from the package version.
+For each release, move the completed notes from `[Unreleased]` under the new version and release date, then create a fresh `[Unreleased]` section. Confirm `pyproject.toml` and `src/eigenscribe/__init__.py` have the same version; the frontend and CLI versions derive from the package version. The `scriber_core` → `eigenscribe` import migration was introduced in `2.0.0` and is not part of this release.
 
 From PowerShell at the repository root, run:
 
@@ -31,7 +31,7 @@ Review the built `.whl` and `.tar.gz` files in `dist/`; `uv build` is also run i
 
 ## Optional TestPyPI rehearsal
 
-After the release commit is pushed, open the repository's **Actions → Publish to PyPI → Run workflow**, select that commit's branch, and leave the target as `testpypi`. This manual path publishes only to TestPyPI. Check the workflow result and, if desired, install `scriber-core==2.0.0` from TestPyPI in a disposable environment to verify its `eigenscribe` import and CLI. TestPyPI and production PyPI are separate indexes.
+After the release commit is pushed, open the repository's **Actions → Publish to PyPI → Run workflow**, select that commit's branch, and leave the target as `testpypi`. This manual path publishes only to TestPyPI. Check the workflow result and, if desired, install `scriber-core==2.0.2` from TestPyPI in a disposable environment to verify its `eigenscribe` import and CLI. TestPyPI and production PyPI are separate indexes.
 
 ## Production release steps
 
@@ -44,7 +44,7 @@ After the release commit is pushed, open the repository's **Actions → Publish 
    git add <reviewed-paths>
    git diff --cached --check
    git diff --cached
-   git commit -m "Prepare v2.0.0 release"
+   git commit -m "Prepare v2.0.2 release"
    git push origin main
    ```
 
@@ -53,8 +53,8 @@ After the release commit is pushed, open the repository's **Actions → Publish 
 3. Create and push an annotated tag that exactly matches the version in `pyproject.toml`:
 
    ```powershell
-   git tag -a v2.0.0 -m "Release 2.0.0"
-   git push origin v2.0.0
+   git tag -a v2.0.2 -m "Release 2.0.2"
+   git push origin v2.0.2
    ```
 
 4. The tag starts the workflow. It runs tests on Python 3.10–3.12, checks that the tag matches `pyproject.toml`, builds and smoke-tests the wheel, then publishes to PyPI using OIDC. Watch **GitHub → Actions** until the `Publish to PyPI` job succeeds, then verify the release at <https://pypi.org/project/scriber-core/>.
@@ -67,4 +67,4 @@ Production publishing is tag-triggered only; a manual workflow run cannot select
 - PyPI install/distribution name: `scriber-core`
 - Python import namespace: `eigenscribe` (including `eigenscribe.frontend` and `eigenscribe.cli`)
 - Console command: `eigenscribe`
-- Existing consumers must migrate imports from `scriber_core` to `eigenscribe`; this breaking change is why the release is `2.0.0`.
+- Existing consumers must migrate imports from `scriber_core` to `eigenscribe`; this breaking change was introduced in `2.0.0`.

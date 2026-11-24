@@ -10,7 +10,9 @@ Welcome to the canonical environment index for autonomous development agents. Th
 
 ```text
 ├── docs/
-│   ├── workspace-setup-guide.md        # Multi-project distribution & setup guide (Submodules / Templates / Packaging)
+│   ├── colors-and-gradients.md          # Canonical palette tokens and gradient presets
+│   ├── PYPI_UPLOAD.md                   # Trusted Publishing and tagged release guide
+│   ├── workspace-setup-guide.md         # Multi-project distribution & setup guide (Submodules / Templates / Packaging)
 │   └── COOP_blog/                      # Reference archive of CERFACS COOP software standards
 ├── house-rules/
 │   ├── python-rules.md               # Mathematical typography, packaging hygiene & consistency rules
@@ -23,7 +25,8 @@ Welcome to the canonical environment index for autonomous development agents. Th
 │   ├── notebooks/
 │   │   └── visuals-boilerplate.ipynb   # Visualizations, NetworkX topologies & color palettes template
 │   └── python/
-│       ├── gold-standard.py            # Gold standard numeric integration template
+│       ├── cli_boilerplate.py           # TrueColor palette and gradient reference module
+│       ├── gold-standard-boilerplate.py # Gold standard scientific computing template
 │       └── visualization_boilerplate.py # Matplotlib, Seaborn & Plotly theme bootstrap template
 ├── src/
 │   └── eigenscribe/                  # 📦 Single top-level package (frontend + cli subpackages)
@@ -32,9 +35,13 @@ Welcome to the canonical environment index for autonomous development agents. Th
 │       ├── cli/                      # 💻 Primary Scriber Core CLI suite & TrueColor tools
 │       │   ├── __init__.py           # CLI package exports & public API
 │       │   ├── __main__.py           # Package execution entry point (`python -m eigenscribe.cli`)
-│       │   ├── main.py               # Command router, gradient banners, and command catalog
-│       │   ├── messaging.py          # Semantic status alerts, ANSI 256 palette & banner generator
-│       │   └── colors_table.py       # COLOR_PALETTE table renderer with TrueColor swatches
+│       │   ├── branding.py           # CLI branding and banner rendering
+│       │   ├── colors_table.py       # COLOR_PALETTE table renderer with TrueColor swatches
+│       │   ├── command_catalog.py    # Structured command catalog
+│       │   ├── main.py               # Command router and Click command definitions
+│       │   ├── messaging.py          # Semantic status alerts and CLI messages
+│       │   ├── smoke_tests.py        # Built-in CLI smoke tests
+│       │   └── vt_mode.py            # Windows Virtual Terminal mode support
 │       └── frontend/                 # 🎨 Frontend, design tokens & styling subsystem
 │           ├── __init__.py
 │           ├── colors.py             # Canonical palette (COLOR_PALETTE), semantic/CLI/EIGEN roles, RGB, hex_to_rgb
@@ -56,19 +63,19 @@ Welcome to the canonical environment index for autonomous development agents. Th
 │   ├── AGENTS.md                     # Canonical agent guidelines & workspace directives
 │   └── skills/
 │       └── tse-visual-styling/       # Workspace skill for The Scriber Experience (TSE) visual system
-├── pyproject.toml                    # PyPI packaging & uv dependency configuration (v2.0.1)
+├── pyproject.toml                    # PyPI packaging & uv dependency configuration (v2.0.2)
 └── README.md                         # Master onboarding index (This file)
 ```
 
 ## 🛠️ Infrastructure & Tooling Lock-ins
 
 - **Package & Environment Manager**: `uv` (Deterministic synchronization via `uv sync`).
-- **Target Runtime Engine**: Python 3.11+
+- **Supported Python**: 3.10 and newer (`requires-python = ">=3.10"`; CI tests 3.10–3.12).
 - **Primary IDE Workspace**: JetBrains PyCharm Professional / IntelliJ IDEA.
 
 ## 💻 Eigenscribe CLI Suite (`eigenscribe`)
 
-`scriber-core` provides a unified, color-coded CLI suite in `src/eigenscribe/cli/` featuring signature TrueColor gradient banners, golden ratio-proportioned gradient text, interactive palette tables, and structured command catalogs. The `eigenscribe` console command is the primary interface; the package can also be run with `python -m eigenscribe` or `python -m eigenscribe.cli`:
+`scriber-core` provides a unified, color-coded CLI suite in `src/eigenscribe/cli/` featuring signature TrueColor gradient banners, golden ratio-proportioned gradient text, palette tables, and structured command catalogs. The canonical palette includes the `aurora_green`, `green_pond`, and `sleeping_beauty` tokens, with an `aurora` gradient preset. The `eigenscribe` console command is the primary interface; the package can also be run with `python -m eigenscribe` or `python -m eigenscribe.cli`:
 
 ```bash
 # Sync dependencies and development tools

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from typing import Final
 
-__version__: Final[str] = "2.0.1"
+__version__: Final[str] = "2.0.2"
 
 from . import frontend
 from . import cli
