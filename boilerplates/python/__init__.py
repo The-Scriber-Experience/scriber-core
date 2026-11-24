@@ -3,13 +3,13 @@
 boilerplates.python
 
 Re-exports the full Eigenscribe visualization theme API from the canonical
-source (scriber_core.frontend.the_scriber_experience.plots.theme) so that notebooks and
+source (eigenscribe.frontend.the_scriber_experience.plots.theme) so that notebooks and
 scripts can import via the shorter `boilerplates.python` path.
 """
 
 from __future__ import annotations
 
-from scriber_core.frontend.the_scriber_experience.plots.theme import (
+from eigenscribe.frontend.the_scriber_experience.plots.theme import (
     COLOR_BG,
     COLOR_BG_COSMIC,
     COLOR_BG_COSMIC_CENTER,

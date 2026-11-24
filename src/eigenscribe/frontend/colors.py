@@ -1,4 +1,4 @@
-# src/scriber_core/frontend/colors.py
+# src/eigenscribe/frontend/colors.py
 """
 colors.py
 
@@ -18,25 +18,11 @@ from collections.abc import Sequence
 from typing import Final, TypeAlias
 
 import math
-import sys
-
-if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
-    try:
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
-        pass
 
 __all__: list[str] = [
     "RGB",
     "Color",
-    "COLOR_GROUPS",
     "COLOR_PALETTE",
-    "TSE_COLORS",
-    "SEMANTIC_COLORS",
-    "CLI_COLORS",
-    "EIGEN_COLORS",
-    "EIGEN_NODE_COLORS",
-    "EIGEN_LABEL_COLORS",
     "GOLDEN_RATIO",
     "PHI",
     "GOLDEN_RATIO_INVERSE",
@@ -60,218 +46,133 @@ PHI: Final[float] = GOLDEN_RATIO
 GOLDEN_RATIO_INVERSE: Final[float] = GOLDEN_RATIO - 1.0  # 1/φ ≈ 0.618033988749895
 
 # -----------------------------------------------------------------------------------------------------------
-# 🎨 Color Palette — grouped by hue family
-#
-# COLOR_GROUPS is the source of truth; COLOR_PALETTE is derived from it (insertion
-# order preserved). Semantic/CLI colors are annotated in comments.
+# 🎨 Canonical Color Palette
+# COLOR_PALETTE is the sole source of authored hex colors for the package.
 # -----------------------------------------------------------------------------------------------------------
 
-COLOR_GROUPS: Final[dict[str, dict[str, str]]] = {
-    "Greens & Teals": {
-        "deep_pine": "#071a12",
-        "forest_teal": "#064e38",
-        "green_dark": "#035100",
-        "pine": "#059669",
-        "success_emerald": "#10b981",  # ⌨️ cli status color: success
-        "ibm_green": "#309592",
-        "deep_green": "#038b00",
-        "node-9": "#00c853",
-        "brigh_green": "#28d728",
-        "neon_green": "#30ff40",
-        "slime_green": "#31ff48",
-        "bright_chartreuse": "#70e000",
-        "junie_lime": "#a7c957",
-        "pale_mint": "#b4ffcf",
-        "green_light": "#57ffbc",
-        "green_jade": "#00ff7f",
-        "tropical_teal": "#03e8bd",
-        "cyan_green": "#00f5d4",
-    },
-    "Cyans & Light Blues": {
-        "electric_lagoon": "#1ef6eb",
-        "electric_cyan": "#00ffee",  # 🌈 tse-gradient-1
-        "node-1": "#00ffff",
-        "bright_cyan": "#00f0ff",  # 🐉 tse-cyan
-        "node-2": "#00e8ff",  # 🌈 tse-gradient-2
-        "reef_cyan": "#1ed9f6",
-        "azure_splash": "#1eb2f6",
-        "node-3": "#14b5ff",  # 🌈 tse-gradient-1
-        "ibm_cyan": "#2ca9e6",
-        "sky_info": "#38bdf8",  # ⌨️ info
-        "sky_cyan": "#4cc9f0",
-        "ice_blue": "#b8f6ff",
-    },
-    "Blues & Indigos": {
-        "midnight_navy": "#06152b",
-        "deep_ocean_blue": "#003b73",
-        "node-4": "#0070eb",
-        "eigen_blue": "#008eff",
-        "cerulean_surge": "#1e8af6",
-        "skyline_blue": "#0a95eb",
-        "electric_blue": "#00a6ff",
-        "sky_blue": "#3a98ff",
-        "cornflower": "#1e7bf6",
-        "azure_sky": "#1e6ff6",
-        "royal_blue": "#1e62f6",
-        "harbor_blue": "#1e64f6",
-        "strong_blue": "#0355e8",
-        "twilight_indigo": "#1e3bf6",
-        "dusk_violet_blue": "#291ef6",
-        "midnight_indigo": "#1e22f6",
-        "ibm_indigo": "#4361ee",
-        "periwinkle_blue": "#5280ff",
-        "midwest_indigo": "#6f78fa",
-        "deep_indigo": "#3a0ca3",
-    },
-    "Purples & Violets": {
-        "deep_plum": "#120a24",
-        "dark_violet": "#3b176e",
-        "deep_iris": "#3b1ef6",
-        "cosmic_violet": "#4b1ef6",
-        "cosmic_iris": "#501ef6",
-        "node-7": "#5e17eb",
-        "deep_purple": "#7c5cff",
-        "node-6": "#7952f5",
-        "nebula_purple": "#781ef6",
-        "bright_violet": "#7c3aed",
-        "amethyst": "#7c1ef6",
-        "ibm_purple": "#844ccc",
-        "royal_purple": "#7209b7",
-        "bright_purple": "#a855f7",
-        "neon_orchid": "#a01ef6",
-        "studio_purple": "#9c1ef6",
-        "vivid_orchid": "#bc1ef6",
-        "pale_lilac": "#d8b4fe",
-    },
-    "Pink & Berries": {
-        "black_cherry": "#210817",
-        "dark_berry": "#7c174f",
-        "deep_rose": "#ad1457",
-        "vivid_pink": "#f72585",
-        "ibm_pink": "#fe28a2",
-        "bright_pink": "#ff40a1",
-        "node-8": "#ff66b3",
-        "soft_rose": "#ff76a1",
-        "pale_orchid_pink": "#ffb4f6",
-    },
-    "Magentas & Reds": {
-        "heliotrope": "#dd1ef6",
-        "neon_magenta": "#f61eef",
-        "bright_magenta": "#ff00c3",
-        "hot_pink": "#ff007b",
-        "error_crimson": "#d7263d",  # ⌨️ error
-    },
-    "Oranges & Corals": {
-        "dusty_peach": "#e7a697",
-        "soft_coral": "#f77f64",
-        "orange_soft": "#f78166",
-        "peach_coral": "#f79764",
-        "tangerine": "#ff8855",
-        "coral_orange": "#ff783d",
-        "apricot": "#ff9d57",
-        "golden_amber": "#feb639",
-        "warning_amber": "#f7c548",  # ⌨️ warning
-        "node-5": "#ffd94a",
-        "yellow_orange": "#ffd166",
-    },
-    "Neutrals": {
-        "ibm_black": "#161616",
-        "dark_slate": "#0d1117",
-        "card_black": "#161b22",
-        "grid_gray": "#21262d",
-        "ibm_gray": "#262625",
-        "border_gray": "#30363d",
-        "charcoal": "#1e293b",
-        "granite": "#264653",
-        "slate": "#64748b",
-        "text_muted": "#8b949e",
-        "text_white": "#e6edf3",
-        "ibm_white": "#f4f4f4",
-        "ghost_white": "#f8fafc",
-        "node-0": "#fff9d6",
-    },
-}
-
-# Flat palette derived from COLOR_GROUPS (single source of truth, no duplication).
+# Values are unique: roles and visual families are represented by token names at
+# their call sites instead of maintaining parallel color dictionaries.
 COLOR_PALETTE: Final[dict[str, str]] = {
-    name: hex_value
-    for group in COLOR_GROUPS.values()
-    for name, hex_value in group.items()
+    "junie_lime": "#a7c957",
+    "aurora_green": "#84cc16",
+    "bright_chartreuse": "#70e000",
+    "slime_green": "#31ff48",
+    "neon_green": "#30ff40",
+    "bright_green": "#28d728",
+    "node-9": "#00c853",
+    "deep_green": "#038b00",
+    "green_dark": "#035100",
+    "deep_pine": "#071a12",
+    "forest_teal": "#064e38",
+    "pine": "#059669",
+    "success_emerald": "#10b981",
+    "ibm_green": "#309592",
+    "tropical_teal": "#03e8bd",
+    "cyan_green": "#00f5d4",
+    "green_pond": "#1ed966",
+    "green_jade": "#00ff7f",
+    "green_light": "#57ffbc",
+    "pale_mint": "#b4ffcf",
+    "electric_lagoon": "#1ef6eb",
+    "electric_cyan": "#00ffee",
+    "node-1": "#00ffff",
+    "bright_cyan": "#00f0ff",
+    "node-2": "#00e8ff",
+    "reef_cyan": "#1ed9f6",
+    "sleeping_beauty": "#06b6d4",
+    "ibm_cyan": "#2ca9e6",
+    "azure_splash": "#1eb2f6",
+    "node-3": "#14b5ff",
+    "sky_info": "#38bdf8",
+    "sky_cyan": "#4cc9f0",
+    "ice_blue": "#b8f6ff",
+    "midnight_navy": "#06152b",
+    "deep_ocean_blue": "#003b73",
+    "node-4": "#0070eb",
+    "eigen_blue": "#008eff",
+    "cerulean_surge": "#1e8af6",
+    "skyline_blue": "#0a95eb",
+    "electric_blue": "#00a6ff",
+    "sky_blue": "#3a98ff",
+    "cornflower": "#1e7bf6",
+    "azure_sky": "#1e6ff6",
+    "royal_blue": "#1e62f6",
+    "strong_blue": "#0355e8",
+    "twilight_indigo": "#1e3bf6",
+    "dusk_violet_blue": "#291ef6",
+    "midnight_indigo": "#1e22f6",
+    "ibm_indigo": "#4361ee",
+    "periwinkle_blue": "#5280ff",
+    "midwest_indigo": "#6f78fa",
+    "deep_indigo": "#3a0ca3",
+    "deep_plum": "#120a24",
+    "dark_violet": "#3b176e",
+    "deep_iris": "#3b1ef6",
+    "cosmic_violet": "#4b1ef6",
+    "cosmic_iris": "#501ef6",
+    "node-7": "#5e17eb",
+    "deep_purple": "#7c5cff",
+    "node-6": "#7952f5",
+    "nebula_purple": "#781ef6",
+    "bright_violet": "#7c3aed",
+    "amethyst": "#7c1ef6",
+    "ibm_purple": "#844ccc",
+    "royal_purple": "#7209b7",
+    "bright_purple": "#a855f7",
+    "neon_orchid": "#a01ef6",
+    "studio_purple": "#9c1ef6",
+    "vivid_orchid": "#bc1ef6",
+    "pale_lilac": "#d8b4fe",
+    "black_cherry": "#210817",
+    "dark_berry": "#7c174f",
+    "deep_rose": "#ad1457",
+    "vivid_pink": "#f72585",
+    "ibm_pink": "#fe28a2",
+    "bright_pink": "#ff40a1",
+    "node-8": "#ff66b3",
+    "soft_rose": "#ff76a1",
+    "pale_orchid_pink": "#ffb4f6",
+    "heliotrope": "#dd1ef6",
+    "neon_magenta": "#f61eef",
+    "bright_magenta": "#ff00c3",
+    "hot_pink": "#ff007b",
+    "error_crimson": "#d7263d",
+    "dusty_peach": "#e7a697",
+    "soft_coral": "#f77f64",
+    "orange_soft": "#f78166",
+    "peach_coral": "#f79764",
+    "tangerine": "#ff8855",
+    "coral_orange": "#ff783d",
+    "apricot": "#ff9d57",
+    "golden_amber": "#feb639",
+    "warning_amber": "#f7c548",
+    "node-5": "#ffd94a",
+    "yellow_orange": "#ffd166",
+    "ibm_black": "#161616",
+    "dark_slate": "#0d1117",
+    "card_black": "#161b22",
+    "grid_gray": "#21262d",
+    "ibm_gray": "#262625",
+    "border_gray": "#30363d",
+    "charcoal": "#1e293b",
+    "granite": "#264653",
+    "slate": "#64748b",
+    "text_muted": "#8b949e",
+    "text_white": "#e6edf3",
+    "ibm_white": "#f4f4f4",
+    "ghost_white": "#f8fafc",
+    "node-0": "#fff9d6",
+    "cosmic_center": "#0a0f1f",
+    "cosmic_void": "#050812",
+    "pure_black": "#000000",
+    "ice_cyan": "#c8f8ff",
+    "text_primary": "#f0f6fc",
+    "text_subtle": "#6e7681",
+    "accent_green": "#38fe52",
+    "accent_blue": "#3881fe",
+    "accent_magenta": "#fe38e4",
+    "accent_amber": "#feb538",
 }
-
-
-# -----------------------------------------------------------------------------------------------------------
-# 🚦 Semantic, CLI & EIGEN Color Roles
-#
-# Canonical semantic palettes, CLI status roles, and the EIGEN / Sephirah node
-# spectra. Every entry references COLOR_PALETTE (the single source of truth) so
-# there is no hardcoded duplication of hex values downstream.
-# -----------------------------------------------------------------------------------------------------------
-
-# 🔱 Signature TSE Colors
-TSE_COLORS: Final[dict[str, str]] = {
-    "tse-cyan": COLOR_PALETTE["bright_cyan"],
-    "tse-blue": COLOR_PALETTE["electric_blue"],
-    "tse-periwinkle": COLOR_PALETTE["periwinkle_blue"],
-    "tse-purple": COLOR_PALETTE["bright_purple"],
-    "tse-pink": COLOR_PALETTE["vivid_pink"],
-}
-
-# 🚦 Semantic Attention & Domain Status Roles
-SEMANTIC_COLORS: Final[dict[str, str]] = {
-    "info": COLOR_PALETTE["sky_info"],
-    "success": COLOR_PALETTE["success_emerald"],
-    "warning": COLOR_PALETTE["warning_amber"],
-    "error": COLOR_PALETTE["error_crimson"],
-    "quantum": COLOR_PALETTE["electric_blue"],
-    "rotor": COLOR_PALETTE["bright_violet"],
-    "network": COLOR_PALETTE["bright_magenta"],
-}
-
-# ⌨️ CLI Status Colors
-CLI_COLORS: Final[dict[str, str]] = {
-    "success": COLOR_PALETTE["success_emerald"],
-    "info": COLOR_PALETTE["sky_info"],
-    "error": COLOR_PALETTE["error_crimson"],
-    "warning": COLOR_PALETTE["warning_amber"],
-}
-
-# 🐉 Canonical EIGEN Spectrum
-EIGEN_COLORS: Final[dict[str, str]] = {
-    "cyan": COLOR_PALETTE["node-2"],
-    "sky": COLOR_PALETTE["node-3"],
-    "blue": COLOR_PALETTE["eigen_blue"],
-    "purple": COLOR_PALETTE["node-6"],
-}
-
-# 🌌 Vibrant 10-Node EIGEN Spectrum (Sephirah Tree of Life nodes 0-9)
-EIGEN_NODE_COLORS: Final[list[str]] = [
-    COLOR_PALETTE["node-0"],  # 0. Crown / Divine White-Gold
-    COLOR_PALETTE["node-1"],  # 1. Electric Pure Cyan
-    COLOR_PALETTE["node-2"],  # 2. Vibrant Cyan
-    COLOR_PALETTE["node-3"],  # 3. Sky Blue
-    COLOR_PALETTE["node-4"],  # 4. Royal Cobalt
-    COLOR_PALETTE["node-5"],  # 5. Radiant Amber Gold
-    COLOR_PALETTE["node-6"],  # 6. Electric Purple
-    COLOR_PALETTE["node-7"],  # 7. Deep Violet
-    COLOR_PALETTE["node-8"],  # 8. Neon Hot Pink
-    COLOR_PALETTE["node-9"],  # 9. Vivid Emerald Green
-]
-
-# 🏷️ EIGEN Node Label Colors (high-contrast variant; node 5 uses solar cyan for legibility)
-EIGEN_LABEL_COLORS: Final[list[str]] = [
-    COLOR_PALETTE["node-0"],  # 0. Crown
-    COLOR_PALETTE["node-1"],  # 1. Pure Cyan
-    COLOR_PALETTE["node-2"],  # 2. Bright Cyan
-    COLOR_PALETTE["node-3"],  # 3. Sky Blue
-    COLOR_PALETTE["node-4"],  # 4. Royal Cobalt
-    COLOR_PALETTE["sky_cyan"],  # 5. Luminous Solar Cyan
-    COLOR_PALETTE["node-6"],  # 6. Electric Purple
-    COLOR_PALETTE["node-7"],  # 7. Deep Violet
-    COLOR_PALETTE["node-8"],  # 8. Neon Pink
-    COLOR_PALETTE["node-9"],  # 9. Vivid Emerald Green
-]
-
 
 # -----------------------------------------------------------------------------------------------------------
 # 1️⃣ Public API
@@ -545,10 +446,10 @@ def _normalize_color(color: Color) -> RGB:
 
 def run_smoke_test() -> bool:
     """
-    Validate the color definitions and render one golden-ratio gradient per category.
+    Validate the canonical color definitions and render a golden-ratio palette gradient.
 
-    Every hex value in COLOR_PALETTE is checked for validity, then each color group
-    in COLOR_GROUPS is rendered as its own smooth gradient line.
+    Every hex value in COLOR_PALETTE is checked for validity before the full palette
+    is rendered as a smooth gradient line.
 
     Returns
     -------
@@ -562,11 +463,10 @@ def run_smoke_test() -> bool:
         rgb = hex_to_rgb(hex_value)
         assert all(0 <= c <= 255 for c in rgb), f"Channel out of range for {name}"
 
-    # 2. Render one gradient per color category
+    # 2. Render the canonical palette
     print()
-    for category, colors in COLOR_GROUPS.items():
-        gradient = render_golden_ratio_gradient(list(colors.values()))
-        print(f"  {category}: {gradient}")
+    gradient = render_golden_ratio_gradient(tuple(COLOR_PALETTE.values()))
+    print(f"  COLOR_PALETTE: {gradient}")
 
     print("\nSmoke tests passed.")
     return True
@@ -583,7 +483,7 @@ def _run_smoke_test() -> None:
 
 
 def main() -> None:
-    """Execute module smoke tests and output the category gradients."""
+    """Execute module smoke tests and output the palette gradient."""
     _run_smoke_test()
 
 

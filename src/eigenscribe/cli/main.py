@@ -14,13 +14,16 @@ Date: November 19, 2026
 
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError, version as distribution_version
+import os
+import re
 import sys
 from typing import Final
 
 import click
 
-from scriber_core.frontend.colors import COLOR_PALETTE, hex_to_rgb
-from scriber_core.frontend.gradients import GRADIENT_PRESETS, multi_gradient
+from eigenscribe.frontend.colors import COLOR_PALETTE, hex_to_rgb
+from eigenscribe.frontend.gradients import GRADIENT_PRESETS, multi_gradient
 
 try:
     from .colors_table import (
@@ -49,13 +52,13 @@ try:
         supports_256_color,
     )
 except ImportError:
-    from scriber_core.cli.colors_table import (
+    from eigenscribe.cli.colors_table import (
         cli as colors_table_cli,
         main as colors_table_main,
         print_colors_table,
         render_colors_table,
     )
-    from scriber_core.cli.messaging import (
+    from eigenscribe.cli.messaging import (
         EIGENSCRIBE_PALETTE,
         STYLE_MAP,
         ansi_256,
@@ -75,19 +78,11 @@ except ImportError:
         supports_256_color,
     )
 
-from scriber_core.frontend.the_scriber_experience.plots.theme import get_eigenscribe_rcparams
-from scriber_core.frontend.the_scriber_experience.mermaid.theme import (
+from eigenscribe.frontend.the_scriber_experience.plots.theme import get_eigenscribe_rcparams
+from eigenscribe.frontend.the_scriber_experience.mermaid.theme import (
     generate_mermaid_flowchart,
     get_mermaid_init_directive,
     render_html_preview,
-)
-from scriber_core.frontend.colors import (
-    CLI_COLORS,
-    EIGEN_COLORS,
-    EIGEN_LABEL_COLORS,
-    EIGEN_NODE_COLORS,
-    SEMANTIC_COLORS,
-    TSE_COLORS,
 )
 
 try:
@@ -109,7 +104,7 @@ try:
     from .smoke_tests import run_smoke_test
     from .vt_mode import enable_vt_mode
 except ImportError:
-    from scriber_core.cli.branding import (
+    from eigenscribe.cli.branding import (
         CLI_VERSION,
         PRIMARY_GRADIENT,
         SECONDARY_GRADIENT,
@@ -117,15 +112,15 @@ except ImportError:
         print_brand_header,
         render_brand_header,
     )
-    from scriber_core.cli.command_catalog import (
+    from eigenscribe.cli.command_catalog import (
         BADGE_COLORS,
         CommandDescriptor,
         REGISTERED_COMMANDS,
         print_commands_list,
         render_commands_list,
     )
-    from scriber_core.cli.smoke_tests import run_smoke_test
-    from scriber_core.cli.vt_mode import enable_vt_mode
+    from eigenscribe.cli.smoke_tests import run_smoke_test
+    from eigenscribe.cli.vt_mode import enable_vt_mode
 
 
 __all__: list[str] = [
@@ -175,19 +170,19 @@ __all__: list[str] = [
 CLI_HELP_BLUE_GRADIENT = GRADIENT_PRESETS["blue_gradient"]  # vivid_cyan → vivid_sky_blue → eigen_blue → strong_blue
 
 # Per-badge solid color mapping for command names in the help output.
-# Each badge maps to a distinct TrueColor hex that reflects the command's functional type.
+# Each badge maps to a canonical palette token for its functional type.
 COMMAND_TYPE_COLORS: Final[dict[str, str]] = {
-    "CORE": COLOR_PALETTE["success_emerald"],   # #10b981 — Emerald: workspace core tools
-    "STYLE": COLOR_PALETTE["midwest_indigo"],   # #6f78fa — Indigo: gradients & banners
-    "TOKEN": COLOR_PALETTE["vivid_pink"],       # #f72585 — Pink: palettes & swatches
-    "DIAG": COLOR_PALETTE["warning_amber"],     # #f7c548 — Amber: diagnostics & verification
+    "CORE": COLOR_PALETTE["success_emerald"],
+    "STYLE": COLOR_PALETTE["midwest_indigo"],
+    "TOKEN": COLOR_PALETTE["vivid_pink"],
+    "DIAG": COLOR_PALETTE["warning_amber"],
 }
 
 # Fallback color for commands not found in the registry
 DEFAULT_COMMAND_COLOR: Final[str] = COLOR_PALETTE["success_emerald"]
 
 CLI_HELP_DESCRIPTION = multi_gradient(
-    "🔱 Eigenscribe CLI (Scriber Core) — Deterministic Workspace Baseline & Palette Tools.",
+    "Eigenscribe CLI (Scriber Core) — Deterministic Workspace Baseline & Palette Tools.",
     colors=GRADIENT_PRESETS["eigenscribe"],
     bold=True,
 )
@@ -302,7 +297,7 @@ class _EigenscribeGroup(click.Group):
     invoke_without_command=True,
     help=CLI_HELP_DESCRIPTION,
     epilog=multi_gradient(
-        "💚 Powered by Eigenscribe — Deterministic Workspace & Palette Suite",
+        "Powered by Eigenscribe — Deterministic Workspace & Palette Suite",
         colors=GRADIENT_PRESETS["eigenscribe"],
         bold=True,
     ),
@@ -353,7 +348,10 @@ def banner_cmd(
     """Generate a styled Eigenscribe banner and rule header."""
     final_title = title or opt_title or "SCRIBER CORE"
     final_sub = subtitle if subtitle else None
-    cli_banner(final_title, final_sub)
+    preset_stops = GRADIENT_PRESETS.get(preset)
+    if preset_stops is None:
+        raise click.BadParameter(f"Unknown gradient preset: {preset}", param_hint="--preset")
+    click.echo(render_banner(final_title, final_sub, width=width, colors=preset_stops), color=True)
 
 
 @cli.command(name="colors-table", help="Print the COLOR_PALETTE table with TrueColor swatch blocks.")
@@ -385,23 +383,32 @@ def colors_table_cmd(
     )
 
 
-@cli.command(name="info", help="Display Scriber Core architectural index, 4-layer token stack, and guidelines.")
+@cli.command(name="info", help="Show package details, common commands, and color/theme sources.")
 def info_cmd() -> None:
-    """Display Scriber Core architectural overview."""
+    """Display a concise guide to the package and its main commands."""
     print_brand_header(
-        title="🏛️ SCRIBER CORE ARCHITECTURAL OVERVIEW",
-        description="Deterministic workspace baseline, styling tokens, and visualization rules for scientific agents.",
+        title="EIGENSCRIBE INFO",
+        description=f"Scriber Core {CLI_VERSION} — terminal colors and visualization tools.",
     )
     click.echo("")
-    cli_rule(level="rule")
-    cli_echo("  🧱 4-Layer Design Token Stack:", color="eigen_cyan", bold=True)
-    cli_echo("    • Layer 1: Primitive Hex Tokens (COLOR_PALETTE in src/scriber_core/frontend/colors.py)", color="eigen_white")
-    cli_echo("    • Layer 2: Semantic Mapping (TSE_COLORS, SEMANTIC_COLORS, BADGE_COLORS)", color="eigen_white")
-    cli_echo("    • Layer 3: Dynamic Engines (multi_gradient, golden ratio interpolation)", color="eigen_white")
-    cli_echo("    • Layer 4: High-Level Visual Themes (Cosmic Void, Sephirah, Glassmorphic UI)", color="eigen_white")
+    cli_echo("PACKAGE", color="eigen_cyan", bold=True)
+    click.echo(f"  Version: {CLI_VERSION}")
+    click.echo("  Purpose: reusable terminal colors, gradients, and visualization themes")
+    click.echo("")
+    cli_echo("COMMON COMMANDS", color="eigen_cyan", bold=True)
+    click.echo("  eigenscribe colors --table   Browse every named color token")
+    click.echo("  eigenscribe gradient --list-presets   Preview available gradients")
+    click.echo("  eigenscribe theme   Inspect plotting theme settings")
+    click.echo("  eigenscribe doctor   Check the workspace styling components")
+    click.echo("")
+    cli_echo("COLOR AND THEME SOURCES", color="eigen_cyan", bold=True)
+    click.echo("  Colors: COLOR_PALETTE in eigenscribe.frontend.colors")
+    click.echo("  Gradients: GRADIENT_PRESETS in eigenscribe.frontend.gradients")
+    click.echo("  Plots and diagrams: eigenscribe.frontend.the_scriber_experience")
+    click.echo("")
     cli_rule(level="rule")
     click.echo("")
-    cli_success("Workspace baseline synchronized.")
+    cli_success("Run eigenscribe --help to see all available commands.")
 
 
 @cli.command(name="gradient", help="Generate and display multi-stop ANSI TrueColor gradient text.")
@@ -416,7 +423,7 @@ def info_cmd() -> None:
     "--stops",
     "-s",
     multiple=True,
-    help="Custom hex color stops (e.g. -s '#00ffff' -s '#ff00c3'). Overrides preset.",
+    help="Custom 6-digit hexadecimal color stops. Overrides preset.",
 )
 @click.option("--bold/--no-bold", default=True, help="Apply bold weight formatting.")
 @click.option("--list-presets", "-l", is_flag=True, help="List all available gradient presets with live previews.")
@@ -428,9 +435,8 @@ def gradient_cmd(text: str, preset: str, stops: tuple[str, ...], bold: bool, lis
         cli_echo("AVAILABLE GRADIENT PRESETS:", color="eigen_cyan", bold=True)
         click.echo("")
         for name, preset_stops in GRADIENT_PRESETS.items():
-            sample_text = f"  [{name:16s}]  ██████████████  " + "  ".join(preset_stops)
-            rendered = multi_gradient(sample_text, colors=preset_stops, bold=True)
-            click.echo(rendered, color=True)
+            swatch = multi_gradient("██████████████", colors=preset_stops, bold=True)
+            click.echo(f"  [{name:16s}]  {swatch}  {'  '.join(preset_stops)}", color=True)
         click.echo("")
         cli_rule(char="─", width=80, level="rule")
         return
@@ -442,59 +448,44 @@ def gradient_cmd(text: str, preset: str, stops: tuple[str, ...], bold: bool, lis
     click.echo(rendered, color=True)
 
 
-@cli.command(name="colors", help="Inspect and display Eigenscribe color palettes with live TrueColor swatches.")
+@cli.command(name="colors", help="Browse canonical color tokens with live TrueColor swatches.")
 @click.option("--all-256", "-a", is_flag=True, help="Display the complete ANSI 256-color palette index.")
 @click.option("--spectrum", "-s", is_flag=True, help="Display the 10-Node EIGEN vibrant node spectrum.")
 @click.option("--table", "-t", is_flag=True, help="Display the full COLOR_PALETTE table with TrueColor blocks and names.")
 def colors_cmd(all_256: bool, spectrum: bool, table: bool) -> None:
-    """Inspect and display Eigenscribe color palettes with live TrueColor swatches."""
+    """Browse canonical palette tokens and optionally preview the node spectrum."""
     if table:
         print_colors_table()
         return
 
-    cli_banner("EIGENSCRIBE DESIGN TOKENS", "Color Palettes, Semantic Roles & Node Spectra")
+    cli_banner("EIGENSCRIBE COLOR PALETTE", "One canonical token list for CLI and visualization colors")
     click.echo("")
 
-    # 1. Signature TSE Colors
-    cli_echo("🎨 Signature TSE Palette & Semantic Status Roles:", color="eigen_cyan", bold=True)
-    for name, hex_code in TSE_COLORS.items():
+    cli_echo(f"CANONICAL COLOR TOKENS ({len(COLOR_PALETTE)}):", color="eigen_cyan", bold=True)
+    for name, hex_code in COLOR_PALETTE.items():
         block = _render_color_block(hex_code)
         click.echo(f"  {block}  {name:18s} {hex_code}")
     click.echo("")
 
-    # 2. Semantic Roles
-    cli_echo("🚦 Semantic Status Roles:", color="eigen_blue_bright", bold=True)
-    for name, hex_code in SEMANTIC_COLORS.items():
-        block = _render_color_block(hex_code)
-        click.echo(f"  {block}  {name:18s} {hex_code}")
-    click.echo("")
-
-    # 3. Canonical EIGEN Spectrum
-    cli_echo("🐉 Canonical EIGEN Spectrum:", color="eigen_cyan", bold=True)
-    for name, hex_code in EIGEN_COLORS.items():
-        block = _render_color_block(hex_code)
-        click.echo(f"  {block}  {name:18s} {hex_code}")
-    click.echo("")
-
-    # 4. Vibrant 10-Node Spectrum
-    cli_echo("🌌 Vibrant 10-Node EIGEN Spectrum (Vibrant 10-Node Spectrum):", color="eigen_purple_bright", bold=True)
-    node_names = [
-        "0. Crown Gold",
-        "1. Electric Cyan",
-        "2. Vivid Cyan",
-        "3. Sky Blue",
-        "4. Deep Cobalt",
-        "5. Amber Gold",
-        "6. Electric Purple",
-        "7. Deep Violet",
-        "8. Rose Pink",
-        "9. Emerald Green",
-    ]
-    for i, hex_code in enumerate(EIGEN_NODE_COLORS):
-        lbl = node_names[i] if i < len(node_names) else f"Node {i}"
-        block = _render_color_block(hex_code, label=f"Node {i}", width=10)
-        click.echo(f"  {block}  {lbl:20s} {hex_code}")
-    click.echo("")
+    if spectrum:
+        cli_echo("VIBRANT 10-NODE SPECTRUM:", color="eigen_purple_bright", bold=True)
+        node_names = [
+            "Divine White-Gold",
+            "Electric Pure Cyan",
+            "Vibrant Cyan",
+            "Sky Blue",
+            "Royal Cobalt",
+            "Radiant Amber Gold",
+            "Electric Purple",
+            "Deep Violet",
+            "Neon Hot Pink",
+            "Vivid Emerald Green",
+        ]
+        for i, label in enumerate(node_names):
+            hex_code = COLOR_PALETTE[f"node-{i}"]
+            block = _render_color_block(hex_code, label=f"Node {i}", width=10)
+            click.echo(f"  {block}  {i}. {label:20s} {hex_code}")
+        click.echo("")
 
     # 5. Full ANSI 256 preview if requested
     if all_256:
@@ -527,9 +518,9 @@ def theme_cmd(theme_format: str) -> None:
         cli_banner("PLOTTING & GRAPHICS THEME", "Matplotlib, Seaborn & Plotly Design Presets")
         click.echo("")
         click.echo(multi_gradient("Theme Engine Parameters:", colors=PRIMARY_GRADIENT, bold=True))
-        click.echo("  • Dark Surface BG:      #0d1117 (COLOR_BG)")
-        click.echo("  • Surface Elevated:     #161b22 (COLOR_SURFACE)")
-        click.echo("  • Luminous Accent:      #c8f8ff (COLOR_TEXT_ACCENT)")
+        click.echo(f"  • Dark Surface BG:      {COLOR_PALETTE['dark_slate']} (COLOR_BG)")
+        click.echo(f"  • Surface Elevated:     {COLOR_PALETTE['card_black']} (COLOR_SURFACE)")
+        click.echo(f"  • Luminous Accent:      {COLOR_PALETTE['ice_cyan']} (COLOR_TEXT_ACCENT)")
         click.echo("  • Primary Font:         JetBrains Mono / Inter / Fira Code")
         click.echo("  • Colormaps:            eigenscribe_cosmic, eigenscribe_vibrant, eigenscribe_diverging")
         click.echo("")
@@ -624,14 +615,12 @@ def doctor_cmd() -> None:
 
     run_check("Gradient Engine & Presets (GRADIENT_PRESETS)", _chk_gradients)
 
-    # Check 5: TSE Semantic & Node Colors
-    def _chk_tse():
-        assert len(TSE_COLORS) >= 5
-        assert len(SEMANTIC_COLORS) >= 4
-        assert len(EIGEN_NODE_COLORS) == 10
-        assert len(EIGEN_LABEL_COLORS) == 10
+    # Check 5: Canonical Node Colors
+    def _chk_nodes():
+        assert all(f"node-{node}" in COLOR_PALETTE for node in range(10))
+        assert "sky_cyan" in COLOR_PALETTE
 
-    run_check("TSE Semantic & 10-Node Spectrum Tokens", _chk_tse)
+    run_check("Canonical 10-Node Spectrum Tokens", _chk_nodes)
 
     # Check 6: Plotting rcParams Theme
     def _chk_theme():
@@ -698,15 +687,43 @@ def smoke_test_cmd() -> None:
 # -----------------------------------------------------------------------------------------------------------
 
 
+def _installed_click_version() -> tuple[int, int] | None:
+    """Return the installed Click major/minor version when available."""
+    try:
+        installed_version = distribution_version("click")
+    except PackageNotFoundError:
+        return None
+
+    match = re.match(r"^(\d+)\.(\d+)", installed_version)
+    if match is None:
+        return None
+    return int(match.group(1)), int(match.group(2))
+
+
+def _warn_for_unsupported_msys_click() -> None:
+    """Warn when an MSYS terminal is paired with Click's broken RGB converter."""
+    if sys.platform != "win32" or not os.environ.get("MSYSTEM"):
+        return
+
+    installed_version = _installed_click_version()
+    if installed_version is not None and installed_version < (8, 5):
+        click.echo(
+            "Warning: Click <8.5 can corrupt TrueColor output in Windows MSYS terminals. "
+            "Run 'uv sync --extra dev' and activate this checkout's .venv, or upgrade Click "
+            "in the environment providing this eigenscribe command.",
+            err=True,
+        )
+
+
 def main() -> None:
     """Primary execution entry point."""
-    # Enable Windows VT mode at invocation time, not import time
     enable_vt_mode()
+    _warn_for_unsupported_msys_click()
 
     if len(sys.argv) > 1 and sys.argv[1] == "--smoke-test":
         run_smoke_test()
     else:
-        cli()
+        cli.main(color=True)
 
 
 if __name__ == "__main__":

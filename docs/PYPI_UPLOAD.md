@@ -1,74 +1,70 @@
-# PyPI Upload Guide for scriber-core
+# Publishing `scriber-core` to PyPI
 
-This repository is now ready for publication on PyPI. Follow these steps to upload your package.
+This repository publishes through GitHub Actions **Trusted Publishing (OIDC)**. No PyPI API token or `.pypirc` file is needed. The PyPI distribution remains `scriber-core`; its Python import package and command are `eigenscribe`.
 
-## Prerequisites
+## One-time publisher setup
 
-- Python 3.10+ with `uv` package manager
-- A PyPI account (create at https://pypi.org/account/register/)
-- A PyPI API token (generate at https://pypi.org/manage/account/token/)
+The `scriber-core` PyPI project already exists. In PyPI, open **scriber-core → Settings → Publishing → Add a new publisher** and enter:
 
-## Step 1: Build the Package
+| Setting | Value |
+| :--- | :--- |
+| Owner | `The-Scriber-Experience` |
+| Repository | `scriber-core` |
+| Workflow | `publish.yml` |
+| Environment | `pypi` |
 
-```bash
-uv pip install build
-python -m build
+In GitHub repository settings, create an environment named `pypi`. Optionally require reviewer approval there so a release cannot publish without your review. For optional TestPyPI validation, configure its Trusted Publisher with the same owner/repository/workflow and environment `testpypi`, and create that GitHub environment too.
+
+## Before a release
+
+For this `2.0.0` breaking release, verify that the `CHANGELOG.md` describes the `scriber_core` → `eigenscribe` import migration. Before making the release commit, move the completed notes from `[Unreleased]` under `[2.0.0] - YYYY-MM-DD`, then create a fresh `[Unreleased]` section. Also confirm `pyproject.toml` and `src/eigenscribe/__init__.py` have the same version; the frontend and CLI versions derive from the package version.
+
+From PowerShell at the repository root, run:
+
+```powershell
+uv sync --extra dev
+uv run pytest tests
+uv build
 ```
 
-This creates two files in the `dist/` directory:
-- `scriber_core-1.0.0.tar.gz` (source distribution)
-- `scriber_core-1.0.0-py3-none-any.whl` (wheel)
+Review the built `.whl` and `.tar.gz` files in `dist/`; `uv build` is also run in CI after the test matrix passes. Do not upload existing files in `dist/` manually: the release workflow builds fresh artifacts from the tagged commit.
 
-## Step 2: Configure PyPI Credentials
+## Optional TestPyPI rehearsal
 
-The `.pypirc` file has been created for you. Add your API token:
+After the release commit is pushed, open the repository's **Actions → Publish to PyPI → Run workflow**, select that commit's branch, and leave the target as `testpypi`. This manual path publishes only to TestPyPI. Check the workflow result and, if desired, install `scriber-core==2.0.0` from TestPyPI in a disposable environment to verify its `eigenscribe` import and CLI. TestPyPI and production PyPI are separate indexes.
 
-```ini
-[pypi]
-username = __token__
-password = pypi-YOUR_API_TOKEN_HERE
-```
+## Production release steps
 
-**Note:** `.pypirc` is in `.gitignore` to prevent credential leaks.
+1. Review `git status`, `git diff`, and the test/build results. Stage only the intended release files; do not stage unrelated work accidentally.
+2. Commit the reviewed changes and push that commit to the repository's default branch. For a repository whose default branch is `main`, the commands are:
 
-## Step 3: Test Upload (Optional)
+   ```powershell
+   git status --short
+   git diff --check
+   git add <reviewed-paths>
+   git diff --cached --check
+   git diff --cached
+   git commit -m "Prepare v2.0.0 release"
+   git push origin main
+   ```
 
-Upload to TestPyPI first to verify everything works:
+   Replace `<reviewed-paths>` with the explicit paths you have reviewed; it is a placeholder, not a command to copy literally. Avoid `git add .` if unrelated or user-owned edits are present.
 
-```bash
-uv pip install twine
-twine upload --repository testpypi dist/*
-```
+3. Create and push an annotated tag that exactly matches the version in `pyproject.toml`:
 
-Check at https://test.pypi.org/project/scriber-core/
+   ```powershell
+   git tag -a v2.0.0 -m "Release 2.0.0"
+   git push origin v2.0.0
+   ```
 
-## Step 4: Upload to PyPI
+4. The tag starts the workflow. It runs tests on Python 3.10–3.12, checks that the tag matches `pyproject.toml`, builds and smoke-tests the wheel, then publishes to PyPI using OIDC. Watch **GitHub → Actions** until the `Publish to PyPI` job succeeds, then verify the release at <https://pypi.org/project/scriber-core/>.
+5. Test the public install in a clean environment with `pip install --upgrade scriber-core`, then check `eigenscribe --version` and `python -c "import eigenscribe; print(eigenscribe.__version__)"`.
 
-```bash
-twine upload dist/*
-```
+Production publishing is tag-triggered only; a manual workflow run cannot select PyPI. PyPI does not allow reusing a published version: if a release has already uploaded, fix the problem in a new patch release rather than trying to overwrite that version.
 
-Check at https://pypi.org/project/scriber-core/
+## Names and migration
 
-## Step 5: Verify Installation
-
-```bash
-pip install scriber-core
-eigenscribe --version
-```
-
-## Updating the Version
-
-Before each release:
-
-1. Update `version` in `pyproject.toml`
-2. Update `__version__` in `src/scriber_core/__init__.py` (and `src/scriber_core/frontend/__init__.py`)
-3. Update `CLI_VERSION` in `src/scriber_core/cli/main.py`
-4. Update `CHANGELOG.md`
-5. Build and upload
-
-## Notes
-
-- The package name on PyPI will be `scriber-core`
-- The import name is `scriber_core` (with `frontend` and `cli` subpackages)
-- The CLI command is `eigenscribe`
+- PyPI install/distribution name: `scriber-core`
+- Python import namespace: `eigenscribe` (including `eigenscribe.frontend` and `eigenscribe.cli`)
+- Console command: `eigenscribe`
+- Existing consumers must migrate imports from `scriber_core` to `eigenscribe`; this breaking change is why the release is `2.0.0`.

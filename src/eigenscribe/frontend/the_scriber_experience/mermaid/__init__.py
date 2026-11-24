@@ -1,4 +1,4 @@
-# src/scriber_core/frontend/the_scriber_experience/mermaid/__init__.py
+# src/eigenscribe/frontend/the_scriber_experience/mermaid/__init__.py
 """
 The Scriber Experience (TSE) Mermaid Subpackage.
 Mermaid.js theme generator, custom styling classes, and HTML diagram preview rendering.

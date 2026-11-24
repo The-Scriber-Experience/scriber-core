@@ -1,4 +1,4 @@
-# src/scriber_core/frontend/__init__.py
+# src/eigenscribe/frontend/__init__.py
 """
 frontend
 
@@ -13,18 +13,14 @@ from __future__ import annotations
 
 from typing import Final
 
+from eigenscribe import __version__ as _package_version
+
 from . import colors, gradients, the_scriber_experience
 from .colors import (
-    CLI_COLORS,
     COLOR_PALETTE,
-    EIGEN_COLORS,
-    EIGEN_LABEL_COLORS,
-    EIGEN_NODE_COLORS,
     GOLDEN_RATIO,
     PHI,
     GOLDEN_RATIO_INVERSE,
-    SEMANTIC_COLORS,
-    TSE_COLORS,
     Color,
     RGB,
     generate_golden_ratio_gradient,
@@ -35,8 +31,6 @@ from .colors import (
 )
 from .gradients import (
     GRADIENT_PRESETS,
-    PRESETS,
-    TSE_GRADIENTS,
     compute_golden_ratio_stop_positions,
     multi_gradient,
 )
@@ -52,7 +46,7 @@ from .the_scriber_experience import (
     register_colormaps,
 )
 
-__version__: Final[str] = "1.0.0"
+__version__: Final[str] = _package_version
 
 __all__: list[str] = [
     "__version__",
@@ -75,16 +69,8 @@ __all__: list[str] = [
     "run_colors_smoke_test",
     # Palettes & Tokens
     "COLOR_PALETTE",
-    "TSE_COLORS",
-    "SEMANTIC_COLORS",
-    "CLI_COLORS",
-    "EIGEN_COLORS",
-    "EIGEN_NODE_COLORS",
-    "EIGEN_LABEL_COLORS",
     # Gradients & Rendering
     "GRADIENT_PRESETS",
-    "TSE_GRADIENTS",
-    "PRESETS",
     "compute_golden_ratio_stop_positions",
     "multi_gradient",
     # Plots

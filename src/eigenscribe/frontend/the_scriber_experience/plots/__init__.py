@@ -1,4 +1,4 @@
-# src/scriber_core/frontend/the_scriber_experience/plots/__init__.py
+# src/eigenscribe/frontend/the_scriber_experience/plots/__init__.py
 """
 The Scriber Experience (TSE) Plots & Visualization Subpackage.
 Matplotlib, Seaborn, and Plotly theme presets, signature colormaps, and heatmap utilities.
@@ -22,8 +22,6 @@ from .theme import (
     COLOR_TEXT_MUTED,
     COMPARISON_PALETTES,
     EIGEN_COLORS,
-    EIGEN_LABEL_COLORS,
-    EIGEN_NODE_COLORS,
     EIGEN_NODES,
     EIGENSCRIBE_COLORMAPS,
     EIGENSCRIBE_GRADIENTS,
@@ -98,9 +96,7 @@ __all__: list[str] = [
     "EIGENSCRIBE_COLORMAPS",
     "EIGENSCRIBE_GRADIENTS",
     "EIGEN_COLORS",
-    "EIGEN_LABEL_COLORS",
     "EIGEN_NODES",
-    "EIGEN_NODE_COLORS",
     "FOUR_COLOR_ACCENT",
     # Gradients & Colormaps
     "GRADIENT_0_CYANS",

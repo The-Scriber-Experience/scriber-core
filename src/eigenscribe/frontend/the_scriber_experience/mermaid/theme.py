@@ -1,4 +1,4 @@
-# src/scriber_core/frontend/the_scriber_experience/mermaid/theme.py
+# src/eigenscribe/frontend/the_scriber_experience/mermaid/theme.py
 """
 theme.py
 
@@ -16,15 +16,7 @@ import json
 from pathlib import Path
 from typing import Any, Final, TypeAlias
 
-import sys
-
-if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
-    try:
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
-        pass
-
-from scriber_core.frontend.colors import COLOR_PALETTE, Color, RGB, hex_to_rgb
+from eigenscribe.frontend.colors import COLOR_PALETTE, Color, RGB, hex_to_rgb
 
 __all__: list[str] = [
     "EIGENSCRIBE_MERMAID_THEME_VARIABLES",
@@ -44,15 +36,22 @@ __all__: list[str] = [
 
 ThemeDict: TypeAlias = dict[str, Any]
 
+
+def _rgba(token: str, alpha: float) -> str:
+    """Build an RGBA string from a canonical palette token."""
+    red, green, blue = hex_to_rgb(COLOR_PALETTE[token])
+    return f"rgba({red}, {green}, {blue}, {alpha:g})"
+
+
 # Foundation Eigenscribe Dark Surface Tokens
-SURFACE_BG: Final[str] = "#0d1117"
-SURFACE_CARD: Final[str] = "#161b22"
-SURFACE_ELEVATED: Final[str] = "#21262d"
-BORDER_DEFAULT: Final[str] = "#30363d"
-BORDER_CYAN_GLOW: Final[str] = "#00e8ff"
-TEXT_PRIMARY: Final[str] = "#f0f6fc"
-TEXT_MUTED: Final[str] = "#8b949e"
-TEXT_ACCENT: Final[str] = "#c8f8ff"
+SURFACE_BG: Final[str] = COLOR_PALETTE["dark_slate"]
+SURFACE_CARD: Final[str] = COLOR_PALETTE["card_black"]
+SURFACE_ELEVATED: Final[str] = COLOR_PALETTE["grid_gray"]
+BORDER_DEFAULT: Final[str] = COLOR_PALETTE["border_gray"]
+BORDER_CYAN_GLOW: Final[str] = COLOR_PALETTE["node-2"]
+TEXT_PRIMARY: Final[str] = COLOR_PALETTE["text_primary"]
+TEXT_MUTED: Final[str] = COLOR_PALETTE["text_muted"]
+TEXT_ACCENT: Final[str] = COLOR_PALETTE["ice_cyan"]
 
 # Default Eigenscribe Mermaid Theme Variables
 EIGENSCRIBE_MERMAID_THEME_VARIABLES: Final[dict[str, str]] = {
@@ -62,78 +61,78 @@ EIGENSCRIBE_MERMAID_THEME_VARIABLES: Final[dict[str, str]] = {
     "primaryColor": SURFACE_CARD,
     "primaryTextColor": TEXT_PRIMARY,
     "primaryBorderColor": BORDER_CYAN_GLOW,
-    "lineColor": "#00e8ff",
-    "secondaryColor": "#1f2937",
-    "tertiaryColor": "#111827",
+    "lineColor": BORDER_CYAN_GLOW,
+    "secondaryColor": COLOR_PALETTE["charcoal"],
+    "tertiaryColor": SURFACE_BG,
     # Flowchart / Graph Nodes
-    "nodeBorder": "#00e8ff",
+    "nodeBorder": BORDER_CYAN_GLOW,
     "nodeTextColor": TEXT_PRIMARY,
     "mainBkg": SURFACE_CARD,
-    "clusterBkg": "#11161d",
-    "clusterBorder": "#38414e",
-    "defaultLinkColor": "#14b5ff",
+    "clusterBkg": SURFACE_BG,
+    "clusterBorder": BORDER_DEFAULT,
+    "defaultLinkColor": COLOR_PALETTE["node-3"],
     "titleColor": TEXT_ACCENT,
     "edgeLabelBackground": SURFACE_CARD,
     # Sequence / Actors
     "actorBkg": SURFACE_CARD,
-    "actorBorder": "#14b5ff",
+    "actorBorder": COLOR_PALETTE["node-3"],
     "actorTextColor": TEXT_PRIMARY,
-    "actorLineColor": "#5280ff",
-    "signalColor": "#00e8ff",
+    "actorLineColor": COLOR_PALETTE["periwinkle_blue"],
+    "signalColor": BORDER_CYAN_GLOW,
     "signalTextColor": TEXT_PRIMARY,
     "labelBoxBkgColor": SURFACE_CARD,
-    "labelBoxBorderColor": "#a855f7",
+    "labelBoxBorderColor": COLOR_PALETTE["bright_purple"],
     "labelTextColor": TEXT_PRIMARY,
     "loopTextColor": TEXT_ACCENT,
-    "noteBkgColor": "#1a2234",
-    "noteBorderColor": "#38bdf8",
+    "noteBkgColor": COLOR_PALETTE["deep_plum"],
+    "noteBorderColor": COLOR_PALETTE["sky_info"],
     "noteTextColor": TEXT_PRIMARY,
-    "activationBorderColor": "#a855f7",
-    "activationBkgColor": "#2d1b4e",
+    "activationBorderColor": COLOR_PALETTE["bright_purple"],
+    "activationBkgColor": COLOR_PALETTE["dark_violet"],
     # Class & State
     "classText": TEXT_PRIMARY,
     "stateBkg": SURFACE_CARD,
-    "stateBorder": "#7952f5",
+    "stateBorder": COLOR_PALETTE["node-6"],
     # Git Graph / Branches
-    "git0": "#00e8ff",
-    "git1": "#a855f7",
-    "git2": "#10b981",
-    "git3": "#f7c548",
-    "git4": "#ff00c3",
-    "git5": "#38bdf8",
-    "git6": "#ff783d",
-    "git7": "#5280ff",
+    "git0": COLOR_PALETTE["node-2"],
+    "git1": COLOR_PALETTE["bright_purple"],
+    "git2": COLOR_PALETTE["success_emerald"],
+    "git3": COLOR_PALETTE["warning_amber"],
+    "git4": COLOR_PALETTE["bright_magenta"],
+    "git5": COLOR_PALETTE["sky_info"],
+    "git6": COLOR_PALETTE["coral_orange"],
+    "git7": COLOR_PALETTE["periwinkle_blue"],
     "gitBranchLabel0": TEXT_PRIMARY,
     "gitBranchLabel1": TEXT_PRIMARY,
     "gitBranchLabel2": TEXT_PRIMARY,
     "gitBranchLabel3": TEXT_PRIMARY,
     # Pie & Sankey
-    "pie1": "#00e8ff",
-    "pie2": "#14b5ff",
-    "pie3": "#7952f5",
-    "pie4": "#a855f7",
-    "pie5": "#ff00c3",
-    "pie6": "#10b981",
-    "pie7": "#f7c548",
+    "pie1": COLOR_PALETTE["node-2"],
+    "pie2": COLOR_PALETTE["node-3"],
+    "pie3": COLOR_PALETTE["node-6"],
+    "pie4": COLOR_PALETTE["bright_purple"],
+    "pie5": COLOR_PALETTE["bright_magenta"],
+    "pie6": COLOR_PALETTE["success_emerald"],
+    "pie7": COLOR_PALETTE["warning_amber"],
     "pieTitleText": TEXT_ACCENT,
-    "pieSectionText": "#ffffff",
+    "pieSectionText": COLOR_PALETTE["ghost_white"],
     "pieLegendText": TEXT_PRIMARY,
 }
 
 # Standard Eigenscribe Mermaid Class Definitions (CSS-in-Mermaid)
 EIGENSCRIBE_MERMAID_CLASSES: Final[dict[str, str]] = {
-    "eigenCyan": "fill:#0c2233,stroke:#00e8ff,stroke-width:2px,color:#f0f6fc",
-    "eigenSky": "fill:#0a2540,stroke:#14b5ff,stroke-width:2px,color:#f0f6fc",
-    "eigenBlue": "fill:#071c36,stroke:#3a98ff,stroke-width:2px,color:#f0f6fc",
-    "eigenPurple": "fill:#201138,stroke:#a855f7,stroke-width:2px,color:#f0f6fc",
-    "eigenViolet": "fill:#190e30,stroke:#7952f5,stroke-width:2px,color:#f0f6fc",
-    "eigenMagenta": "fill:#2d0822,stroke:#ff00c3,stroke-width:2px,color:#f0f6fc",
-    "eigenPink": "fill:#330a21,stroke:#f72585,stroke-width:2px,color:#f0f6fc",
-    "eigenEmerald": "fill:#06261d,stroke:#10b981,stroke-width:2px,color:#f0f6fc",
-    "eigenAmber": "fill:#2b1d07,stroke:#f7c548,stroke-width:2px,color:#f0f6fc",
-    "eigenCrimson": "fill:#330a0f,stroke:#d7263d,stroke-width:2px,color:#f0f6fc",
-    "eigenGlass": "fill:#161b22,stroke:#30363d,stroke-width:1.5px,color:#f0f6fc",
-    "eigenSubtle": "fill:#0d1117,stroke:#21262d,stroke-width:1px,color:#8b949e",
+    "eigenCyan": f"fill:{COLOR_PALETTE['deep_ocean_blue']},stroke:{BORDER_CYAN_GLOW},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenSky": f"fill:{COLOR_PALETTE['midnight_navy']},stroke:{COLOR_PALETTE['node-3']},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenBlue": f"fill:{COLOR_PALETTE['deep_ocean_blue']},stroke:{COLOR_PALETTE['sky_blue']},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenPurple": f"fill:{COLOR_PALETTE['deep_plum']},stroke:{COLOR_PALETTE['bright_purple']},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenViolet": f"fill:{COLOR_PALETTE['deep_plum']},stroke:{COLOR_PALETTE['node-6']},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenMagenta": f"fill:{COLOR_PALETTE['black_cherry']},stroke:{COLOR_PALETTE['bright_magenta']},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenPink": f"fill:{COLOR_PALETTE['black_cherry']},stroke:{COLOR_PALETTE['vivid_pink']},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenEmerald": f"fill:{COLOR_PALETTE['deep_pine']},stroke:{COLOR_PALETTE['success_emerald']},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenAmber": f"fill:{COLOR_PALETTE['deep_plum']},stroke:{COLOR_PALETTE['warning_amber']},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenCrimson": f"fill:{COLOR_PALETTE['black_cherry']},stroke:{COLOR_PALETTE['error_crimson']},stroke-width:2px,color:{TEXT_PRIMARY}",
+    "eigenGlass": f"fill:{SURFACE_CARD},stroke:{BORDER_DEFAULT},stroke-width:1.5px,color:{TEXT_PRIMARY}",
+    "eigenSubtle": f"fill:{SURFACE_BG},stroke:{SURFACE_ELEVATED},stroke-width:1px,color:{TEXT_MUTED}",
 }
 
 
@@ -162,25 +161,24 @@ def get_mermaid_theme_variables(
         Dictionary of themeVariable options for Mermaid.js.
     """
     config = dict(EIGENSCRIBE_MERMAID_THEME_VARIABLES)
-
     if variant == "cosmic":
         config.update({
-            "background": "#050812",
-            "primaryColor": "#0a0f1f",
-            "lineColor": "#00ffee",
-            "nodeBorder": "#00ffee",
-            "clusterBkg": "#080c18",
-            "clusterBorder": "#1a2542",
+            "background": COLOR_PALETTE["cosmic_void"],
+            "primaryColor": COLOR_PALETTE["cosmic_center"],
+            "lineColor": COLOR_PALETTE["electric_cyan"],
+            "nodeBorder": COLOR_PALETTE["electric_cyan"],
+            "clusterBkg": COLOR_PALETTE["cosmic_void"],
+            "clusterBorder": COLOR_PALETTE["deep_ocean_blue"],
         })
     elif variant == "high-contrast":
         config.update({
-            "background": "#000000",
-            "primaryColor": "#121212",
-            "lineColor": "#00ffff",
-            "nodeBorder": "#00ffff",
-            "primaryTextColor": "#ffffff",
-            "clusterBkg": "#0a0a0a",
-            "clusterBorder": "#ffffff",
+            "background": COLOR_PALETTE["pure_black"],
+            "primaryColor": COLOR_PALETTE["ibm_black"],
+            "lineColor": COLOR_PALETTE["node-1"],
+            "nodeBorder": COLOR_PALETTE["node-1"],
+            "primaryTextColor": COLOR_PALETTE["ghost_white"],
+            "clusterBkg": COLOR_PALETTE["ibm_black"],
+            "clusterBorder": COLOR_PALETTE["ghost_white"],
         })
 
     config.update(overrides)
@@ -374,14 +372,14 @@ def render_html_preview(
   <title>{title}</title>
   <style>
     :root {{
-      --bg: #0d1117;
-      --card: #161b22;
-      --border: #30363d;
-      --text: #f0f6fc;
-      --cyan: #00e8ff;
+      --bg: {SURFACE_BG};
+      --card: {SURFACE_CARD};
+      --border: {BORDER_DEFAULT};
+      --text: {TEXT_PRIMARY};
+      --cyan: {BORDER_CYAN_GLOW};
     }}
     body {{
-      background: radial-gradient(circle at center, #0a0f1f 0%, #050812 60%, #000000 100%);
+      background: radial-gradient(circle at center, {COLOR_PALETTE['cosmic_center']} 0%, {COLOR_PALETTE['cosmic_void']} 60%, {COLOR_PALETTE['pure_black']} 100%);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       margin: 0;
@@ -394,23 +392,23 @@ def render_html_preview(
       box-sizing: border-box;
     }}
     .container {{
-      background: rgba(22, 27, 34, 0.85);
+      background: {_rgba('card_black', 0.85)};
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid {_rgba('ghost_white', 0.1)};
       border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 232, 255, 0.15);
+      box-shadow: 0 8px 32px {_rgba('pure_black', 0.5)}, 0 0 16px {_rgba('node-2', 0.15)};
       padding: 2.5rem;
       max-width: 90vw;
       overflow-x: auto;
     }}
     h1 {{
-      color: #c8f8ff;
+      color: {TEXT_ACCENT};
       font-size: 1.5rem;
       font-weight: 600;
       margin-top: 0;
       margin-bottom: 1.5rem;
       text-align: center;
-      text-shadow: 0 0 12px rgba(0, 232, 255, 0.4);
+      text-shadow: 0 0 12px {_rgba('node-2', 0.4)};
     }}
     .mermaid {{
       display: flex;
@@ -483,11 +481,11 @@ def _run_smoke_test() -> None:
     # 1. Theme variables verification
     theme_vars = get_mermaid_theme_variables(variant="dark")
     assert theme_vars["darkMode"] == "true"
-    assert theme_vars["primaryBorderColor"] == "#00e8ff"
+    assert theme_vars["primaryBorderColor"] == COLOR_PALETTE["node-2"]
     assert "nodeBorder" in theme_vars
 
     cosmic_vars = get_mermaid_theme_variables(variant="cosmic")
-    assert cosmic_vars["background"] == "#050812"
+    assert cosmic_vars["background"] == COLOR_PALETTE["cosmic_void"]
 
     # 2. Init directive check
     directive = get_mermaid_init_directive()

@@ -15,6 +15,7 @@ Date: November 19, 2026
 
 from __future__ import annotations
 
+import os
 import sys
 
 
@@ -32,43 +33,48 @@ __all__: list[str] = [
 def enable_vt_mode() -> None:
     """Enable ANSI/VT100 Virtual Terminal Processing on Windows consoles.
 
-    Tries multiple strategies in order of preference:
-    1. sys.stdout.reconfigure() (Python 3.7+)
-    2. ctypes call to kernel32.SetConsoleMode
-    3. colorama.just_fix_windows_console()
+    The ctypes API declarations use Windows pointer-sized handles and DWORD
+    console modes. Redirected streams are left unchanged when they do not have
+    an associated console.
 
     On non-Windows platforms, this is a no-op.
     """
     if sys.platform != "win32":
         return
 
-    # Strategy 1: reconfigure stdout encoding
-    if hasattr(sys.stdout, "reconfigure"):
-        try:
-            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-        except Exception:
-            pass
-
-    # Strategy 2: ctypes to enable ENABLE_VIRTUAL_TERMINAL_PROCESSING (0x0004)
+    # Configure the console API signatures before passing handles or mode pointers.
     try:
         import ctypes
+        from ctypes import wintypes
 
         kernel32 = ctypes.windll.kernel32
+        kernel32.GetStdHandle.argtypes = [wintypes.DWORD]
+        kernel32.GetStdHandle.restype = wintypes.HANDLE
+        kernel32.GetConsoleMode.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+        kernel32.GetConsoleMode.restype = wintypes.BOOL
+        kernel32.GetFileType.argtypes = [wintypes.HANDLE]
+        kernel32.GetFileType.restype = wintypes.DWORD
+        kernel32.SetConsoleMode.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+        kernel32.SetConsoleMode.restype = wintypes.BOOL
+
         handle = kernel32.GetStdHandle(-11)
-        mode = ctypes.c_ulong()
+        mode = wintypes.DWORD()
         if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
             kernel32.SetConsoleMode(handle, mode.value | 0x0004)
+            _configure_stdout_encoding()
+        elif os.environ.get("MSYSTEM") and kernel32.GetFileType(handle) == 0x0003:
+            _configure_stdout_encoding()
     except Exception:
         pass
 
-    # Strategy 3: colorama fallback
-    try:
-        import colorama
 
-        if hasattr(colorama, "just_fix_windows_console"):
-            colorama.just_fix_windows_console()
-        else:
-            colorama.init(wrap=False)
+def _configure_stdout_encoding() -> None:
+    """Use UTF-8 unless the user explicitly selected a Python I/O encoding."""
+    if "PYTHONIOENCODING" in os.environ or not hasattr(sys.stdout, "reconfigure"):
+        return
+
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
 
@@ -86,7 +92,7 @@ def run_smoke_test() -> bool:
     bool
         True if enable_vt_mode() completes without raising.
     """
-    print("💨 Running src/scriber_core/cli/vt_mode.py smoke tests...")
+    print("💨 Running src/eigenscribe/cli/vt_mode.py smoke tests...")
 
     # Verify enable_vt_mode does not raise
     enable_vt_mode()
@@ -94,7 +100,7 @@ def run_smoke_test() -> bool:
     # Verify platform detection
     assert sys.platform in ("win32", "linux", "darwin"), f"Unexpected platform: {sys.platform!r}"
 
-    print("✅ src/scriber_core/cli/vt_mode.py smoke tests passed successfully.\n")
+    print("✅ src/eigenscribe/cli/vt_mode.py smoke tests passed successfully.\n")
     return True
 
 

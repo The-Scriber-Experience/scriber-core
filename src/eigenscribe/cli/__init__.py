@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from typing import Final
 
-from scriber_core.frontend.colors import COLOR_PALETTE, RGB, hex_to_rgb
+from eigenscribe.frontend.colors import COLOR_PALETTE, RGB, hex_to_rgb
 
 from . import branding, command_catalog, colors_table, main, messaging, smoke_tests, vt_mode
 from .branding import (

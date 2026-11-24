@@ -6,13 +6,13 @@ This document establishes the canonical reference catalog for all color tokens, 
 
 ## 📋 1. Single Source of Truth (`COLOR_PALETTE`)
 
-All primitive color tokens in `scriber-core` are defined in `src/scriber_core/frontend/colors.py` as 6-digit hex values (`#rrggbb`). Downstream modules, CLI tools, plotting themes, and stylesheets must import and reference these token names rather than introducing raw, uncoordinated RGB/hex literals.
+All primitive color tokens in `scriber-core` are defined in `src/eigenscribe/frontend/colors.py` as 6-digit hex values (`#rrggbb`). Downstream modules, CLI tools, plotting themes, and stylesheets must import and reference these token names rather than introducing raw, uncoordinated RGB/hex literals.
 
-### 🎨 Complete Primitive Palette Table
+### 🎨 Complete Primitive Palette Table (119 tokens)
 
-Organized by hue family as defined in `COLOR_GROUPS` within `src/scriber_core/frontend/colors.py`.
+The legacy hue-family headings below are for readability only; the package maintains a single flat `COLOR_PALETTE` dictionary, not grouped or role-specific hex dictionaries. Bold IDs are stable catalog identifiers; newly added tokens receive the next ID and may not follow hue-family order.
 
-#### 💚 Greens & Teals (18 colors)
+#### 💚 Greens & Teals (20 colors)
 
 | # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
 | :---: | :--- | :---: | :---: | :--- |
@@ -24,7 +24,7 @@ Organized by hue family as defined in `COLOR_GROUPS` within `src/scriber_core/fr
 | **6** | `ibm_green` | `#309592` | `(48, 149, 146)` | Muted cyan-green / industrial indicator |
 | **7** | `deep_green` | `#038b00` | `(3, 139, 0)` | Pure deep green / high-saturation accent |
 | **8** | `node-9` | `#00c853` | `(0, 200, 83)` | Sephirah Node 9 / vivid emerald green |
-| **9** | `brigh_green` | `#28d728` | `(40, 215, 40)` | Bright pure green / high-energy accent |
+| **9** | `bright_green` | `#28d728` | `(40, 215, 40)` | Bright pure green / high-energy accent |
 | **10** | `neon_green` | `#30ff40` | `(48, 255, 64)` | High-luminance neon / attention indicator |
 | **11** | `slime_green` | `#31ff48` | `(49, 255, 72)` | Neon chartreuse-green / cyberpunk accent |
 | **12** | `bright_chartreuse` | `#70e000` | `(112, 224, 0)` | High-contrast lime / mathematical scalar |
@@ -34,6 +34,8 @@ Organized by hue family as defined in `COLOR_GROUPS` within `src/scriber_core/fr
 | **16** | `green_jade` | `#00ff7f` | `(0, 255, 127)` | Spring green / pure spectral midpoint |
 | **17** | `tropical_teal` | `#03e8bd` | `(3, 232, 189)` | High-saturation teal / quantum indicator |
 | **18** | `cyan_green` | `#00f5d4` | `(0, 245, 212)` | Turquoise / aquamarine bridge to cyan |
+| **108** | `aurora_green` | `#84cc16` | `(132, 204, 22)` | Aurora gradient endpoint / luminous lime green |
+| **109** | `green_pond` | `#1ed966` | `(30, 217, 102)` | Bright pond green / aquatic accent |
 
 #### 🩵 Cyans & Light Blues (13 colors)
 
@@ -45,6 +47,7 @@ Organized by hue family as defined in `COLOR_GROUPS` within `src/scriber_core/fr
 | **22** | `bright_cyan` | `#00f0ff` | `(0, 240, 255)` | Signature `tse-cyan` / active focus |
 | **23** | `node-2` | `#00e8ff` | `(0, 232, 255)` | Sephirah Node 2 / `tse-gradient-2` start |
 | **24** | `reef_cyan` | `#1ed9f6` | `(30, 217, 246)` | Soft cyan / reef gradient stop |
+| **110** | `sleeping_beauty` | `#06b6d4` | `(6, 182, 212)` | Aurora gradient start / tranquil teal |
 | **25** | `azure_splash` | `#1eb2f6` | `(30, 178, 246)` | Azure blue-cyan / sky transition |
 | **26** | `node-3` | `#14b5ff` | `(20, 181, 255)` | Sephirah Node 3 / `tse-gradient-1` stop |
 | **27** | `ibm_cyan` | `#2ca9e6` | `(44, 169, 230)` | Technical sky blue / documentation accent |
@@ -52,7 +55,7 @@ Organized by hue family as defined in `COLOR_GROUPS` within `src/scriber_core/fr
 | **29** | `sky_cyan` | `#4cc9f0` | `(76, 201, 240)` | Soft sky cyan / section bullet marker |
 | **30** | `ice_blue` | `#b8f6ff` | `(184, 246, 255)` | Luminous low-fatigue body text token |
 
-#### 💙 Blues & Indigos (20 colors)
+#### 💙 Blues & Indigos (19 colors)
 
 | # | Token Key Name | Hex Code | RGB Channel Vector | Perceptual Category & Semantic Role |
 | :---: | :--- | :---: | :---: | :--- |
@@ -67,7 +70,6 @@ Organized by hue family as defined in `COLOR_GROUPS` within `src/scriber_core/fr
 | **39** | `cornflower` | `#1e7bf6` | `(30, 123, 246)` | Cornflower blue / mid-tone accent |
 | **40** | `azure_sky` | `#1e6ff6` | `(30, 111, 246)` | Azure sky / deep blue transition |
 | **41** | `royal_blue` | `#1e62f6` | `(30, 98, 246)` | Royal blue / high-density accent |
-| **42** | `harbor_blue` | `#1e64f6` | `(30, 100, 246)` | Harbor blue / structural link |
 | **43** | `strong_blue` | `#0355e8` | `(3, 85, 232)` | High-density blue / border accent |
 | **44** | `twilight_indigo` | `#1e3bf6` | `(30, 59, 246)` | Twilight indigo / deep violet-blue |
 | **45** | `dusk_violet_blue` | `#291ef6` | `(41, 30, 246)` | Dusk violet-blue / purple transition |
@@ -158,54 +160,45 @@ Organized by hue family as defined in `COLOR_GROUPS` within `src/scriber_core/fr
 | **105** | `ibm_white` | `#f4f4f4` | `(244, 244, 244)` | High-contrast light foreground |
 | **106** | `ghost_white` | `#f8fafc` | `(248, 250, 252)` | Clean white primary text foreground |
 | **107** | `node-0` | `#fff9d6` | `(255, 249, 214)` | Sephirah Node 0 / crown divine white-gold |
+| **111** | `cosmic_center` | `#0a0f1f` | `(10, 15, 31)` | Cosmic radial center |
+| **112** | `cosmic_void` | `#050812` | `(5, 8, 18)` | Cosmic mid/void foundation |
+| **113** | `pure_black` | `#000000` | `(0, 0, 0)` | Cosmic outer boundary |
+| **114** | `ice_cyan` | `#c8f8ff` | `(200, 248, 255)` | Luminous text and plot accent |
+| **115** | `text_primary` | `#f0f6fc` | `(240, 246, 252)` | Primary plotting text |
+| **116** | `text_subtle` | `#6e7681` | `(110, 118, 129)` | Subtle plotting labels |
+| **117** | `accent_green` | `#38fe52` | `(56, 254, 82)` | High-contrast green accent |
+| **118** | `accent_blue` | `#3881fe` | `(56, 129, 254)` | High-contrast blue accent |
+| **119** | `accent_magenta` | `#fe38e4` | `(254, 56, 228)` | High-contrast magenta accent |
+| **120** | `accent_amber` | `#feb538` | `(254, 181, 56)` | High-contrast amber accent |
 
 ---
 
 ## 🌈 2. Linear Gradient Engine & Preset Catalog
 
-All multi-stop TrueColor gradients in `src/scriber_core/frontend/gradients.py` support mathematical Golden Ratio stop proportioning ($\phi \approx 1.618$). Segment proportions decrease from left to right according to $w_k = (1/\phi)^k$, providing cognitive grounding with prominent blue/cyan start stops tapering into violet/pink.
+All multi-stop TrueColor gradients in `src/eigenscribe/frontend/gradients.py` support mathematical Golden Ratio stop proportioning ($\phi \approx 1.618$). Segment proportions decrease from left to right according to $w_k = (1/\phi)^k$, providing cognitive grounding with prominent blue/cyan start stops tapering into violet/pink.
 
 ### 🌟 Registered Gradient Presets (`GRADIENT_PRESETS`)
 
 | Preset Key | Hex Stop Sequence | Keyframe Color Names | Primary Mathematical / Design Role |
 | :--- | :--- | :--- | :--- |
-| **`eigenscribe`** | `#00e8ff` → `#008eff` → `#6f78fa` → `#5e17eb` | `node-2` → `eigen_blue` → `midwest_indigo` → `node-7` | **Signature Eigenscribe Gradient**: CLI banners, headers, and major section titles |
-| **`tse-gradient-1`** | `#1ef6eb` → `#1ed9f6` → `#1eb2f6` → `#1e8af6` → `#1e64f6` → `#1e3bf6` → `#291ef6` → `#501ef6` → `#781ef6` → `#a01ef6` | `electric_lagoon` → `reef_cyan` → `azure_splash` → `cerulean_surge` → `harbor_blue` → `twilight_indigo` → `dusk_violet_blue` → `cosmic_iris` → `nebula_purple` → `neon_orchid` | **10-Stop Cosmic Flow**: Full spectrum cyan-to-violet gradient for wide terminal displays |
+| **`eigenscribe`** | `#00e8ff` → `#14b5ff` → `#008eff` → `#7952f5` | `node-2` → `node-3` → `eigen_blue` → `node-6` | **Signature Eigenscribe Gradient**: CLI banners, headers, and major section titles |
+| **`tse-gradient-1`** | `#1ef6eb` → `#1ed9f6` → `#1eb2f6` → `#1e8af6` → `#1e62f6` → `#1e3bf6` → `#291ef6` → `#501ef6` → `#781ef6` → `#a01ef6` | `electric_lagoon` → `reef_cyan` → `azure_splash` → `cerulean_surge` → `royal_blue` → `twilight_indigo` → `dusk_violet_blue` → `cosmic_iris` → `nebula_purple` → `neon_orchid` | **10-Stop Cosmic Flow**: Full spectrum cyan-to-violet gradient for wide terminal displays |
 | **`tse-gradient-2`** | `#00e8ff` → `#14b5ff` → `#0a95eb` → `#008eff` → `#5e17eb` | `node-2` → `node-3` → `skyline_blue` → `eigen_blue` → `node-7` | **Deep Spectrum**: Extended 5-stop gradient for plots and telemetry |
 | **`electric`** | `#00a6ff` → `#a855f7` → `#ff00c3` | `electric_blue` → `bright_purple` → `bright_magenta` | **Signature Electric**: High-contrast cybernetic headings and brand banners |
 | **`sunset`** | `#ff783d` → `#f7c548` → `#ff40a1` | `coral_orange` → `warning_amber` → `bright_pink` | **Solar Sunset**: Dynamic execution telemetry, heat warnings, and benchmarks |
 | **`forest`** | `#a7c957` → `#03e8bd` → `#264653` | `junie_lime` → `tropical_teal` → `granite` | **Deep Forest**: Numerical simulations, environmental metrics, and ecology models |
 | **`midnight`** | `#38bdf8` → `#6f78fa` → `#ff66b3` | `sky_info` → `midwest_indigo` → `node-8` | **Midnight Cosmic**: Astrodynamics, phase topologies, and deep-space metrics |
+| **`aurora`** | `#06b6d4` → `#10b981` → `#84cc16` | `sleeping_beauty` → `success_emerald` → `aurora_green` | **Quantum Aurora**: Northern-lights palettes, energy fields, and spectral analysis |
 | **`cyberpunk`** | `#00f0ff` → `#5e17eb` → `#ff007b` | `bright_cyan` → `node-7` → `hot_pink` | **Cyberpunk Neon**: High-attention diagnostic flags, overrides, and stress states |
 | **`blue_gradient`** | `#00e8ff` → `#14b5ff` → `#008eff` → `#0355e8` | `node-2` → `node-3` → `eigen_blue` → `strong_blue` | **Blue Spectrum**: Monochromatic blue gradient for structural elements |
-| **`green_gradient`** | `#03e8bd` → `#10b981` → `#70e000` → `#00c853` | `tropical_teal` → `success_emerald` → `bright_chartreuse` → `node-9` | **Quantum Aurora**: Energy fields, spectral analysis, and optimal convergence |
+| **`green_gradient`** | `#03e8bd` → `#10b981` → `#70e000` → `#00c853` | `tropical_teal` → `success_emerald` → `bright_chartreuse` → `node-9` | **Green Spectrum**: Teal-to-emerald transitions for environmental metrics and growth indicators |
 | **`purple_gradient`** | `#7209b7` → `#a855f7` → `#7c3aed` → `#5e17eb` | `royal_purple` → `bright_purple` → `bright_violet` → `node-7` | **Royal Violet**: Architectural submodules, structural layers, and mathematics |
 
 ---
 
-## 🏛️ 3. Semantic Roles & Subsystem Mappings
+## 🏛️ 3. Using Palette Tokens in Subsystems
 
-### 🔱 Signature TSE Tokens (`TSE_COLORS`)
-- `tse-cyan`: `COLOR_PALETTE["bright_cyan"]` (`#00f0ff`)
-- `tse-blue`: `COLOR_PALETTE["electric_blue"]` (`#00a6ff`)
-- `tse-periwinkle`: `COLOR_PALETTE["periwinkle_blue"]` (`#5280ff`)
-- `tse-purple`: `COLOR_PALETTE["bright_purple"]` (`#a855f7`)
-- `tse-pink`: `COLOR_PALETTE["vivid_pink"]` (`#f72585`)
-
-### 🚦 Semantic Attention Roles (`SEMANTIC_COLORS`)
-- `info`: `COLOR_PALETTE["sky_info"]` (`#38bdf8`) — Informational states and focus
-- `success`: `COLOR_PALETTE["success_emerald"]` (`#10b981`) — Verified outcomes and passing assertions
-- `warning`: `COLOR_PALETTE["warning_amber"]` (`#f7c548`) — Attention triggers and warnings
-- `error`: `COLOR_PALETTE["error_crimson"]` (`#d7263d`) — Exceptions, failures, and critical halts
-- `quantum`: `COLOR_PALETTE["electric_blue"]` (`#00a6ff`) — Quantum / harmonic phase markers
-- `rotor`: `COLOR_PALETTE["bright_violet"]` (`#7c3aed`) — Rotational kinetics and oscillator markers
-- `network`: `COLOR_PALETTE["bright_magenta"]` (`#ff00c3`) — Graph topologies and network edges
-
-### 🏷️ CLI Functional Badges (`BADGE_COLORS`)
-- `CORE`: `COLOR_PALETTE["success_emerald"]` (`#10b981`) — Verified core utilities
-- `STYLE`: `COLOR_PALETTE["midwest_indigo"]` (`#6f78fa`) — Visual styling & gradient generators
-- `TOKEN`: `COLOR_PALETTE["vivid_pink"]` (`#f72585`) — Palette token inspection tools
-- `DIAG`: `COLOR_PALETTE["warning_amber"]` (`#f7c548`) — Health diagnostics and smoke tests
+CLI message levels and badges map semantic names to `COLOR_PALETTE` token keys; plotting themes and gradient presets likewise reference palette keys. These mappings describe behavior, but do not define additional hex colors.
 
 ---
 
@@ -215,12 +208,12 @@ A comprehensive utilitarian review of design token architecture and styling subs
 
 ### 🌟 The Good
 1. **Single Source of Truth (`COLOR_PALETTE`)**:
-   - Centralizing all 107 named color definitions in `src/scriber_core/frontend/colors.py` guarantees repo-wide color fidelity across terminal CLIs, Matplotlib plots, Seaborn colormaps, dark-mode Mermaid diagrams, and CSS tokens.
+   - Centralizing all 119 named color definitions in `src/eigenscribe/frontend/colors.py` guarantees repo-wide color fidelity across terminal CLIs, Matplotlib plots, Seaborn colormaps, dark-mode Mermaid diagrams, and CSS tokens.
 2. **Mathematical Golden Ratio ($\phi$) Gradient Proportioning**:
    - Stop positions computed via $w_k = (1/\phi)^k$ eliminate arbitrary gradient banding, anchoring visual attention on high-luminance blue/cyan focal points while smoothly tapering into deep purple/pink accents.
 3. **Robust Separation of Concerns**:
-   - Clean architectural decoupling between `src/scriber_core/cli/` (terminal user interface, table formatting, click commands) and `src/scriber_core/frontend/` (mathematical color interpolation, design tokens, plotting themes).
-4. **Resilient Terminal Compatibility**:
-   - Seamless cross-platform support with automatic Windows Virtual Terminal Processing enablement, 24-bit TrueColor rendering, ANSI 256-color fallback, and 16-color degradation.
+   - Clean architectural decoupling between `src/eigenscribe/cli/` (terminal user interface, table formatting, click commands) and `src/eigenscribe/frontend/` (mathematical color interpolation, design tokens, plotting themes).
+4. **Terminal Compatibility**:
+   - CLI output supports TrueColor rendering and Windows Virtual Terminal Processing; real Git Bash rendering is still awaiting terminal-specific verification (tracked in `TODO.md`).
 5. **Deterministic Testing Rigor**:
    - Built-in smoke testing and 100% automated test suite coverage (`pytest`) guaranteeing zero regressions during package refactoring.

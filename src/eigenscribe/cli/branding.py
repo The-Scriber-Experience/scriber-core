@@ -19,8 +19,9 @@ from typing import Final, Sequence
 
 import click
 
-from scriber_core.frontend.colors import COLOR_PALETTE, RGB, hex_to_rgb
-from scriber_core.frontend.gradients import GRADIENT_PRESETS, multi_gradient
+from eigenscribe import __version__
+from eigenscribe.frontend.colors import COLOR_PALETTE, RGB, hex_to_rgb
+from eigenscribe.frontend.gradients import GRADIENT_PRESETS, multi_gradient
 
 
 __all__: list[str] = [
@@ -49,10 +50,10 @@ __all__: list[str] = [
 # 🎭 Typing helpers / constants (define once, use Final)
 # -----------------------------------------------------------------------------------------------------------
 
-CLI_VERSION: Final[str] = "1.0.0"
+CLI_VERSION: Final[str] = __version__
 
 PRIMARY_GRADIENT: Final[tuple[str, ...]] = GRADIENT_PRESETS["eigenscribe"]
-SECONDARY_GRADIENT: Final[tuple[str, ...]] = ("#00a6ff", "#7952f5", "#a855f7", "#ff28a2")
+SECONDARY_GRADIENT: Final[tuple[str, ...]] = GRADIENT_PRESETS["purple_gradient"]
 
 # ASCII art rendering "EIGENSCRIBE" (figlet standard font)
 EIGENSCRIBE_BLOCK_TEXT: Final[str] = r"""
@@ -64,12 +65,12 @@ EIGENSCRIBE_BLOCK_TEXT: Final[str] = r"""
 """
 
 # Semantic Color Token Mapping from COLOR_PALETTE
-HEADER_CATEGORY_COLOR: Final[str] = COLOR_PALETTE["node-2"]  # #00e8ff - High contrast primary focus
-CMD_NAME_COLOR: Final[str] = COLOR_PALETTE["success_emerald"]  # #10b981 - Command names in help output
-SYNTAX_FLAG_COLOR: Final[str] = COLOR_PALETTE["pale_lilac"]  # #d8b4fe - Syntax and options
-DESC_TEXT_COLOR: Final[str] = COLOR_PALETTE["ice_blue"]  # #b8f6ff - Readable description body
-BORDER_FRAME_COLOR: Final[str] = COLOR_PALETTE["periwinkle_blue"]  # #5280ff - Structural frame borders
-SECTION_BULLET_COLOR: Final[str] = COLOR_PALETTE["sky_cyan"]  # #4cc9f0 - Bullet markers
+HEADER_CATEGORY_COLOR: Final[str] = COLOR_PALETTE["node-2"]
+CMD_NAME_COLOR: Final[str] = COLOR_PALETTE["success_emerald"]
+SYNTAX_FLAG_COLOR: Final[str] = COLOR_PALETTE["pale_lilac"]
+DESC_TEXT_COLOR: Final[str] = COLOR_PALETTE["ice_blue"]
+BORDER_FRAME_COLOR: Final[str] = COLOR_PALETTE["periwinkle_blue"]
+SECTION_BULLET_COLOR: Final[str] = COLOR_PALETTE["sky_cyan"]
 
 
 # -----------------------------------------------------------------------------------------------------------
@@ -83,7 +84,7 @@ def ansi_color(hex_code: str, text: str, *, bold: bool = False) -> str:
     Parameters
     ----------
     hex_code : str
-        Hexadecimal color string (e.g. '#00e8ff').
+        Six-digit hexadecimal color string.
     text : str
         Text string to style.
     bold : bool, default=False
@@ -115,7 +116,7 @@ def interpolate_gradient_color(colors: Sequence[str], position: float) -> str:
         Interpolated hex color string.
     """
     if len(colors) < 2:
-        return colors[0] if colors else "#000000"
+        return colors[0] if colors else COLOR_PALETTE["pure_black"]
 
     if position <= 0.0:
         return colors[0]
@@ -267,10 +268,10 @@ def run_smoke_test() -> bool:
     bool
         True if all branding checks pass.
     """
-    print("💨 Running src/scriber_core/cli/branding.py smoke tests...")
+    print("💨 Running src/eigenscribe/cli/branding.py smoke tests...")
 
     # Verify constants
-    assert CLI_VERSION == "1.0.0"
+    assert CLI_VERSION == __version__
     assert len(PRIMARY_GRADIENT) == 4
     assert len(SECONDARY_GRADIENT) == 4
     assert len(EIGENSCRIBE_BLOCK_TEXT.strip()) > 0
@@ -287,14 +288,14 @@ def run_smoke_test() -> bool:
         assert color_key in COLOR_PALETTE.values(), f"Color token {color_key!r} not in COLOR_PALETTE"
 
     # Verify ansi_color produces valid ANSI codes
-    test_str = ansi_color("#00e8ff", "test_cyan", bold=True)
+    test_str = ansi_color(COLOR_PALETTE["node-2"], "test_cyan", bold=True)
     assert "\033[1;38;2;0;232;255mtest_cyan\033[0m" == test_str
 
     # Verify header rendering
     header_output = render_brand_header()
     assert "\033[38;2;" in header_output or "\033[1;38;2;" in header_output
 
-    print("✅ src/scriber_core/cli/branding.py smoke tests passed successfully.\n")
+    print("✅ src/eigenscribe/cli/branding.py smoke tests passed successfully.\n")
     return True
 
 

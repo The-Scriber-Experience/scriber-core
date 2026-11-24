@@ -2,8 +2,8 @@
 """
 test_cli_colors_table.py
 
-Comprehensive unit and integration test suite for `src/scriber_core/cli/colors_table.py`,
-`src/scriber_core/cli/colors.py`, `src/scriber_core/cli/main.py`, and `src/scriber_core/cli/__init__.py`.
+Comprehensive unit and integration test suite for `src/eigenscribe/cli/colors_table.py`,
+`src/eigenscribe/cli/colors.py`, `src/eigenscribe/cli/main.py`, and `src/eigenscribe/cli/__init__.py`.
 """
 
 from __future__ import annotations
@@ -13,7 +13,7 @@ import click
 from click.testing import CliRunner
 import pytest
 
-from scriber_core.cli import (
+from eigenscribe.cli import (
     BADGE_COLORS,
     BORDER_FRAME_COLOR,
     BOX_STYLES,
@@ -38,8 +38,8 @@ from scriber_core.cli import (
     render_colors_table,
     render_commands_list,
 )
-from scriber_core.cli.colors_table import _compute_hue, _compute_relative_luminance, main as colors_table_main
-from scriber_core.cli.main import (
+from eigenscribe.cli.colors_table import _compute_hue, _compute_relative_luminance, main as colors_table_main
+from eigenscribe.cli.main import (
     cli as main_cli,
     main as scriber_main,
     run_smoke_test as main_smoke_test,
@@ -57,11 +57,13 @@ def test_color_entry_namedtuple_and_build() -> None:
     entries = build_color_entries()
     assert len(entries) == len(COLOR_PALETTE)
     first = entries[0]
+    first_name, first_hex = next(iter(COLOR_PALETTE.items()))
+    expected_rgb = tuple(int(first_hex[index : index + 2], 16) for index in (1, 3, 5))
     assert isinstance(first, ColorEntry)
     assert first.index == 1
-    assert first.name == "deep_pine"
-    assert first.hex_code == "#071a12"
-    assert first.rgb == (7, 26, 18)
+    assert first.name == first_name
+    assert first.hex_code == first_hex
+    assert first.rgb == expected_rgb
     assert 0.0 <= first.luminance <= 1.0
     assert 0.0 <= first.hue <= 360.0
 
@@ -137,7 +139,7 @@ def test_print_colors_table_output(capsys: pytest.CaptureFixture[str]) -> None:
 
 def test_main_and_colors_module_entry_points(capsys: pytest.CaptureFixture[str]) -> None:
     """Verify cli.main and cli.colors_table entry points execute with ANSI TrueColor codes."""
-    from scriber_core.cli.main import main as main_entry
+    from eigenscribe.cli.main import main as main_entry
 
     # Direct function invocation of print_colors_table via main module
     print_colors_table({"pine": "#059669"}, block_width=2)
@@ -164,7 +166,7 @@ def test_cli_runner_invocations(runner: CliRunner) -> None:
     assert "deep_pine" in res_no_head.output
 
 
-def test_scriber_core_block_text_and_brand_header(capsys: pytest.CaptureFixture[str]) -> None:
+def test_eigenscribe_block_text_and_brand_header(capsys: pytest.CaptureFixture[str]) -> None:
     """Verify block text reading 'scriber-core' with SECONDARY_GRADIENT and gradient header."""
     assert len(EIGENSCRIBE_BLOCK_TEXT.strip()) > 0
     assert "|" in EIGENSCRIBE_BLOCK_TEXT
@@ -204,7 +206,7 @@ def test_render_and_print_commands_list(capsys: pytest.CaptureFixture[str]) -> N
 
 
 def test_main_cli_invocations(runner: CliRunner) -> None:
-    """Verify main Click group and subcommand invocations in src/scriber_core/cli/main.py."""
+    """Verify main Click group and subcommand invocations in src/eigenscribe/cli/main.py."""
     # 1. Default invocation (no subcommands)
     res_default = runner.invoke(main_cli, [])
     assert res_default.exit_code == 0
@@ -239,7 +241,7 @@ def test_main_cli_invocations(runner: CliRunner) -> None:
 
 
 def test_main_smoke_test_function() -> None:
-    """Verify run_smoke_test in src/scriber_core/cli/main.py."""
+    """Verify run_smoke_test in src/eigenscribe/cli/main.py."""
     assert main_smoke_test() is True
 
 
@@ -262,7 +264,7 @@ def test_relative_luminance_and_hue_calculations() -> None:
 
 def test_golden_ratio_proportions_and_header_gradients() -> None:
     """Verify golden ratio stop position decay and header gradient styling."""
-    from scriber_core.frontend.gradients import compute_golden_ratio_stop_positions, multi_gradient
+    from eigenscribe.frontend.gradients import compute_golden_ratio_stop_positions, multi_gradient
 
     # Verify decay across 4 stops (blue -> cyan -> indigo -> violet/pink)
     stops = compute_golden_ratio_stop_positions(4)

@@ -1,4 +1,4 @@
-# src/scriber_core/frontend/the_scriber_experience/plots/theme.py
+# src/eigenscribe/frontend/the_scriber_experience/plots/theme.py
 """
 theme.py
 
@@ -12,8 +12,6 @@ Date: November 15, 2026
 
 from __future__ import annotations
 
-import contextlib
-import sys
 from collections.abc import Mapping, Sequence
 from typing import Any, Final, TypeAlias
 
@@ -22,6 +20,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import Colormap, LinearSegmentedColormap
 from numpy.typing import NDArray
+
+from eigenscribe.frontend.colors import COLOR_PALETTE, hex_to_rgb
+from eigenscribe.frontend.gradients import GRADIENT_PRESETS
 
 try:
     import seaborn as sns
@@ -39,11 +40,6 @@ except ModuleNotFoundError:
     go = None
     HAS_PLOTLY = False
 
-# Force UTF-8 on Windows
-if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
-    with contextlib.suppress(Exception):
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-
 ArrayOrFloat: TypeAlias = float | NDArray[np.float64]
 
 # -----------------------------------------------------------------------------------------------------------
@@ -52,58 +48,65 @@ ArrayOrFloat: TypeAlias = float | NDArray[np.float64]
 
 DEFAULT_SEED: Final[int] = 42
 
+
+def _rgba(token: str, alpha: float) -> str:
+    """Build an RGBA string from a canonical palette token."""
+    red, green, blue = hex_to_rgb(COLOR_PALETTE[token])
+    return f"rgba({red}, {green}, {blue}, {alpha:g})"
+
+
 # --- Foundation Surface & Text Tokens (Layer 1: Design Tokens) ---
-COLOR_BG: Final[str] = "#0d1117"
-COLOR_SURFACE: Final[str] = "#161b22"
-COLOR_SURFACE_ELEVATED: Final[str] = "#21262d"
-COLOR_SURFACE_OVERLAY: Final[str] = "rgba(22, 27, 34, 0.75)"
-COLOR_GRAPH_BG: Final[str] = "rgba(3, 7, 18, 0.85)"
+COLOR_BG: Final[str] = COLOR_PALETTE["dark_slate"]
+COLOR_SURFACE: Final[str] = COLOR_PALETTE["card_black"]
+COLOR_SURFACE_ELEVATED: Final[str] = COLOR_PALETTE["grid_gray"]
+COLOR_SURFACE_OVERLAY: Final[str] = _rgba("card_black", 0.75)
+COLOR_GRAPH_BG: Final[str] = _rgba("deep_plum", 0.85)
 
 # Cosmic Deep Radial Foundations
-COLOR_BG_COSMIC_CENTER: Final[str] = "#0a0f1f"
-COLOR_BG_COSMIC: Final[str] = "#050812"
-COLOR_BG_COSMIC_VOID: Final[str] = "#000000"
+COLOR_BG_COSMIC_CENTER: Final[str] = COLOR_PALETTE["cosmic_center"]
+COLOR_BG_COSMIC: Final[str] = COLOR_PALETTE["cosmic_void"]
+COLOR_BG_COSMIC_VOID: Final[str] = COLOR_PALETTE["pure_black"]
 
-COLOR_TEXT: Final[str] = "#f0f6fc"
-COLOR_TEXT_BRIGHT: Final[str] = "#ffffff"
-COLOR_TEXT_MUTED: Final[str] = "#8b949e"
-COLOR_TEXT_SUBTLE: Final[str] = "#6e7681"
-COLOR_TEXT_ACCENT: Final[str] = "#c8f8ff"
-COLOR_TEXT_SEPHIRAH: Final[str] = "#c8f8ff"
+COLOR_TEXT: Final[str] = COLOR_PALETTE["text_primary"]
+COLOR_TEXT_BRIGHT: Final[str] = COLOR_PALETTE["ghost_white"]
+COLOR_TEXT_MUTED: Final[str] = COLOR_PALETTE["text_muted"]
+COLOR_TEXT_SUBTLE: Final[str] = COLOR_PALETTE["text_subtle"]
+COLOR_TEXT_ACCENT: Final[str] = COLOR_PALETTE["ice_cyan"]
+COLOR_TEXT_SEPHIRAH: Final[str] = COLOR_PALETTE["ice_cyan"]
 
 # Glassmorphic Overlays & Luminous Accents
-COLOR_LUMINOUS_CYAN: Final[str] = "#c8f8ff"
-COLOR_COSMIC_BG: Final[str] = "rgba(0, 232, 255, 0.08)"
-COLOR_COSMIC_GLOW: Final[str] = "rgba(0, 232, 255, 0.30)"
-COLOR_COSMIC_BORDER: Final[str] = "rgba(255, 255, 255, 0.08)"
-COLOR_TOOLTIP_BG: Final[str] = "rgba(0, 0, 0, 0.75)"
-COLOR_TOOLTIP_BORDER: Final[str] = "rgba(255, 255, 255, 0.12)"
+COLOR_LUMINOUS_CYAN: Final[str] = COLOR_PALETTE["ice_cyan"]
+COLOR_COSMIC_BG: Final[str] = _rgba("node-2", 0.08)
+COLOR_COSMIC_GLOW: Final[str] = _rgba("node-2", 0.30)
+COLOR_COSMIC_BORDER: Final[str] = _rgba("ghost_white", 0.08)
+COLOR_TOOLTIP_BG: Final[str] = _rgba("pure_black", 0.75)
+COLOR_TOOLTIP_BORDER: Final[str] = _rgba("ghost_white", 0.12)
 
 # Extended Glassmorphic & Specular Tokens
-COLOR_GLASS_INDIGO: Final[str] = "rgba(99, 102, 241, 0.35)"
-COLOR_GLASS_PURPLE: Final[str] = "rgba(168, 85, 247, 0.25)"
-COLOR_GLASS_VIOLET: Final[str] = "rgba(121, 82, 245, 0.40)"
-COLOR_GLASS_CYAN: Final[str] = "rgba(0, 255, 238, 0.15)"
-COLOR_GLASS_CYAN_GLOW: Final[str] = "rgba(0, 232, 255, 0.40)"
-COLOR_GLASS_BLUE: Final[str] = "rgba(56, 152, 255, 0.50)"
-COLOR_GLASS_SKY: Final[str] = "rgba(20, 165, 255, 0.60)"
+COLOR_GLASS_INDIGO: Final[str] = _rgba("ibm_indigo", 0.35)
+COLOR_GLASS_PURPLE: Final[str] = _rgba("bright_purple", 0.25)
+COLOR_GLASS_VIOLET: Final[str] = _rgba("node-6", 0.40)
+COLOR_GLASS_CYAN: Final[str] = _rgba("electric_cyan", 0.15)
+COLOR_GLASS_CYAN_GLOW: Final[str] = _rgba("node-2", 0.40)
+COLOR_GLASS_BLUE: Final[str] = _rgba("sky_blue", 0.50)
+COLOR_GLASS_SKY: Final[str] = _rgba("node-3", 0.60)
 
 # Additional Vibrant & Accent Color Primitives
-COLOR_CYAN_PURE: Final[str] = "#00ffee"
-COLOR_BLUE_VIBRANT: Final[str] = "#0a95eb"
-COLOR_BLUE_AZURE: Final[str] = "#0596f0"
-COLOR_BLUE_SKY_LIGHT: Final[str] = "#60a5fa"
-COLOR_PURPLE_SOFT: Final[str] = "#a78bfa"
-COLOR_INDIGO_ACCENT: Final[str] = "#5280ff"
-COLOR_VIOLET_DEEP: Final[str] = "#5e17eb"
-COLOR_PINK_HOT: Final[str] = "#ff40a1"
-COLOR_ORANGE_BRIGHT: Final[str] = "#ff8855"
-COLOR_ORANGE_CORAL: Final[str] = "#ff783d"
-COLOR_AMBER_WARM: Final[str] = "#ff9d57"
-COLOR_ACCENT_GREEN: Final[str] = "#38fe52"
-COLOR_ACCENT_BLUE: Final[str] = "#3881fe"
-COLOR_ACCENT_MAGENTA: Final[str] = "#fe38e4"
-COLOR_ACCENT_AMBER: Final[str] = "#feb538"
+COLOR_CYAN_PURE: Final[str] = COLOR_PALETTE["electric_cyan"]
+COLOR_BLUE_VIBRANT: Final[str] = COLOR_PALETTE["skyline_blue"]
+COLOR_BLUE_AZURE: Final[str] = COLOR_PALETTE["eigen_blue"]
+COLOR_BLUE_SKY_LIGHT: Final[str] = COLOR_PALETTE["sky_info"]
+COLOR_PURPLE_SOFT: Final[str] = COLOR_PALETTE["pale_lilac"]
+COLOR_INDIGO_ACCENT: Final[str] = COLOR_PALETTE["periwinkle_blue"]
+COLOR_VIOLET_DEEP: Final[str] = COLOR_PALETTE["node-7"]
+COLOR_PINK_HOT: Final[str] = COLOR_PALETTE["bright_pink"]
+COLOR_ORANGE_BRIGHT: Final[str] = COLOR_PALETTE["tangerine"]
+COLOR_ORANGE_CORAL: Final[str] = COLOR_PALETTE["coral_orange"]
+COLOR_AMBER_WARM: Final[str] = COLOR_PALETTE["apricot"]
+COLOR_ACCENT_GREEN: Final[str] = COLOR_PALETTE["accent_green"]
+COLOR_ACCENT_BLUE: Final[str] = COLOR_PALETTE["accent_blue"]
+COLOR_ACCENT_MAGENTA: Final[str] = COLOR_PALETTE["accent_magenta"]
+COLOR_ACCENT_AMBER: Final[str] = COLOR_PALETTE["accent_amber"]
 
 # Backwards compatibility aliases
 COLOR_SEPHIRAH_CYAN: Final[str] = COLOR_LUMINOUS_CYAN
@@ -111,15 +114,15 @@ COLOR_SEPHIRAH_BG: Final[str] = COLOR_COSMIC_BG
 COLOR_SEPHIRAH_GLOW: Final[str] = COLOR_COSMIC_GLOW
 COLOR_SEPHIRAH_BORDER: Final[str] = COLOR_COSMIC_BORDER
 
-COLOR_BORDER: Final[str] = "#30363d"
-COLOR_GRID: Final[str] = "#21262d"
-COLOR_MATH: Final[str] = "#00f5db"
+COLOR_BORDER: Final[str] = COLOR_PALETTE["border_gray"]
+COLOR_GRID: Final[str] = COLOR_PALETTE["grid_gray"]
+COLOR_MATH: Final[str] = COLOR_PALETTE["cyan_green"]
 
 # --- Canonical EIGEN Spectrum ---
-EIGEN_CYAN: Final[str] = "#00e8ff"
-EIGEN_SKY: Final[str] = "#14b5ff"
-EIGEN_BLUE: Final[str] = "#3a98ff"
-EIGEN_PURPLE: Final[str] = "#7952f5"
+EIGEN_CYAN: Final[str] = COLOR_PALETTE["node-2"]
+EIGEN_SKY: Final[str] = COLOR_PALETTE["node-3"]
+EIGEN_BLUE: Final[str] = COLOR_PALETTE["sky_blue"]
+EIGEN_PURPLE: Final[str] = COLOR_PALETTE["node-6"]
 
 EIGEN_COLORS: Final[dict[str, str]] = {
     "cyan": EIGEN_CYAN,
@@ -130,43 +133,8 @@ EIGEN_COLORS: Final[dict[str, str]] = {
 
 # --- Vibrant 10-Node Spectrum ---
 EIGEN_NODES: Final[dict[str, str]] = {
-    "node_0": "#fff9d6",  # 0. Crown / Divine White-Gold
-    "node_1": "#00ffff",  # 1. Electric Pure Cyan
-    "node_2": "#00e8ff",  # 2. Vibrant Cyan
-    "node_3": "#14b5ff",  # 3. Sky Blue
-    "node_4": "#0070eb",  # 4. Royal Cobalt
-    "node_5": "#ffd94a",  # 5. Radiant Amber Gold
-    "node_6": "#7952f5",  # 6. Electric Purple
-    "node_7": "#5e17eb",  # 7. Deep Violet
-    "node_8": "#ff66b3",  # 8. Neon Hot Pink
-    "node_9": "#00c853",  # 9. Vivid Emerald Green
+    f"node_{node}": COLOR_PALETTE[f"node-{node}"] for node in range(10)
 }
-
-EIGEN_NODE_COLORS: Final[list[str]] = [
-    "#fff9d6",  # 0. Crown / White-Gold
-    "#00ffff",  # 1. Pure Cyan
-    "#00e8ff",  # 2. Vibrant Cyan
-    "#14b5ff",  # 3. Sky Blue
-    "#0070eb",  # 4. Royal Cobalt
-    "#ffd94a",  # 5. Radiant Gold
-    "#7952f5",  # 6. Electric Purple
-    "#5e17eb",  # 7. Deep Violet
-    "#ff66b3",  # 8. Neon Pink
-    "#00c853",  # 9. Vivid Emerald Green
-]
-
-EIGEN_LABEL_COLORS: Final[list[str]] = [
-    "#fff9d6",  # 0. Crown
-    "#00ffff",  # 1. Pure Cyan
-    "#00e8ff",  # 2. Bright Cyan
-    "#14b5ff",  # 3. Sky Blue
-    "#0070eb",  # 4. Royal Cobalt
-    "#4cc9f0",  # 5. Luminous Solar Cyan
-    "#7952f5",  # 6. Electric Purple
-    "#5e17eb",  # 7. Deep Violet
-    "#ff66b3",  # 8. Neon Pink
-    "#00c853",  # 9. Vivid Emerald Green
-]
 
 EIGEN_NODE_NAMES: Final[list[str]] = [
     "0️⃣ Keter",
@@ -194,30 +162,33 @@ SEPHIRAH_NODES: Final[dict[str, str]] = {
     "yesod": EIGEN_NODES["node_8"],
     "malkuth": EIGEN_NODES["node_9"],
 }
-SEPHIRAH_NODE_COLORS: Final[list[str]] = EIGEN_NODE_COLORS
-SEPHIRAH_LABEL_COLORS: Final[list[str]] = EIGEN_LABEL_COLORS
+SEPHIRAH_NODE_COLORS: Final[list[str]] = list(EIGEN_NODES.values())
+SEPHIRAH_LABEL_COLORS: Final[list[str]] = [
+    COLOR_PALETTE["sky_cyan"] if node == 5 else color
+    for node, color in enumerate(SEPHIRAH_NODE_COLORS)
+]
 SEPHIRAH_NAMES: Final[list[str]] = EIGEN_NODE_NAMES
 
 # --- High-Contrast Semantic Palette ---
-COLOR_PRIMARY_LIGHT: Final[str] = "#00e8ff"
-COLOR_PRIMARY: Final[str] = "#14b5ff"
-COLOR_PRIMARY_DARK: Final[str] = "#0070eb"
+COLOR_PRIMARY_LIGHT: Final[str] = COLOR_PALETTE["node-2"]
+COLOR_PRIMARY: Final[str] = COLOR_PALETTE["node-3"]
+COLOR_PRIMARY_DARK: Final[str] = COLOR_PALETTE["node-4"]
 
-COLOR_SECONDARY_LIGHT: Final[str] = "#c4b5fd"
-COLOR_SECONDARY: Final[str] = "#9b7dff"
-COLOR_SECONDARY_DARK: Final[str] = "#7952f5"
+COLOR_SECONDARY_LIGHT: Final[str] = COLOR_PALETTE["pale_lilac"]
+COLOR_SECONDARY: Final[str] = COLOR_PALETTE["deep_purple"]
+COLOR_SECONDARY_DARK: Final[str] = COLOR_PALETTE["node-6"]
 
-COLOR_TERTIARY_LIGHT: Final[str] = "#22f792"
-COLOR_TERTIARY: Final[str] = "#10b981"
-COLOR_TERTIARY_DARK: Final[str] = "#059669"
+COLOR_TERTIARY_LIGHT: Final[str] = COLOR_PALETTE["pale_mint"]
+COLOR_TERTIARY: Final[str] = COLOR_PALETTE["success_emerald"]
+COLOR_TERTIARY_DARK: Final[str] = COLOR_PALETTE["pine"]
 
-COLOR_QUATERNARY_LIGHT: Final[str] = "#fef08a"
-COLOR_QUATERNARY: Final[str] = "#f78166"
-COLOR_QUATERNARY_DARK: Final[str] = "#ea580c"
+COLOR_QUATERNARY_LIGHT: Final[str] = COLOR_PALETTE["node-5"]
+COLOR_QUATERNARY: Final[str] = COLOR_PALETTE["orange_soft"]
+COLOR_QUATERNARY_DARK: Final[str] = COLOR_PALETTE["coral_orange"]
 
-COLOR_PERNARY_LIGHT: Final[str] = "#f472b6"
-COLOR_PERNARY: Final[str] = "#ec4899"
-COLOR_PERNARY_DARK: Final[str] = "#be185d"
+COLOR_PERNARY_LIGHT: Final[str] = COLOR_PALETTE["pale_orchid_pink"]
+COLOR_PERNARY: Final[str] = COLOR_PALETTE["vivid_pink"]
+COLOR_PERNARY_DARK: Final[str] = COLOR_PALETTE["dark_berry"]
 
 # Full token map
 THEME_TOKENS: Final[dict[str, str]] = {
@@ -310,78 +281,16 @@ THEME_TOKENS: Final[dict[str, str]] = {
 }
 
 # --- Multi-Stop Gradient Sequences ---
-GRADIENT_0_CYANS: Final[list[str]] = [
-    "#00ffff",
-    "#00e8ff",
-    "#14b5ff",
-    "#00a6ff",
-    "#0070eb",
-]
-GRADIENT_1_CYAN_SKY: Final[list[str]] = [
-    "#00f0ff",
-    "#14b5ff",
-    "#3a98ff",
-    "#5280ff",
-    "#7952f5",
-]
-GRADIENT_2_CYAN_BLUE: Final[list[str]] = [
-    "#00ffff",
-    "#0a95eb",
-    "#0070eb",
-    "#5e17eb",
-    "#7952f5",
-]
-GRADIENT_3_TEAL_BLUE: Final[list[str]] = [
-    "#00f5db",
-    "#00d4ff",
-    "#009dff",
-    "#0062ff",
-    "#6100ff",
-]
-GRADIENT_4_CYAN_PURPLE: Final[list[str]] = [
-    "#00ffff",
-    "#00a6ff",
-    "#7952f5",
-    "#a855f7",
-    "#ff00c3",
-]
-GRADIENT_5_CYAN_DEEP_PURPLE: Final[list[str]] = [
-    "#00e8ff",
-    "#14b5ff",
-    "#5280ff",
-    "#7952f5",
-    "#5e17eb",
-]
-GRADIENT_6_CYAN_PINK: Final[list[str]] = [
-    "#00e8ff",
-    "#14b5ff",
-    "#5280ff",
-    "#7952f5",
-    "#ff66b3",
-]
-GRADIENT_7_FULL_FLOW: Final[list[str]] = [
-    "#00e8ff",
-    "#14b5ff",
-    "#5280ff",
-    "#7952f5",
-    "#ff66b3",
-    "#ff783d",
-    "#ffd94a",
-]
-GRADIENT_8_SYNTHWAVE: Final[list[str]] = [
-    "#4cc9f0",
-    "#4361ee",
-    "#3a0ca3",
-    "#7209b7",
-    "#f72585",
-]
-GRADIENT_8_SYNTHWAVE_REV: Final[list[str]] = [
-    "#f72585",
-    "#7209b7",
-    "#3a0ca3",
-    "#4361ee",
-    "#4cc9f0",
-]
+GRADIENT_0_CYANS: Final[list[str]] = list(GRADIENT_PRESETS["tse-gradient-2"])
+GRADIENT_1_CYAN_SKY: Final[list[str]] = list(GRADIENT_PRESETS["eigenscribe"])
+GRADIENT_2_CYAN_BLUE: Final[list[str]] = list(GRADIENT_PRESETS["blue_gradient"])
+GRADIENT_3_TEAL_BLUE: Final[list[str]] = list(GRADIENT_PRESETS["forest"])
+GRADIENT_4_CYAN_PURPLE: Final[list[str]] = list(GRADIENT_PRESETS["electric"])
+GRADIENT_5_CYAN_DEEP_PURPLE: Final[list[str]] = list(GRADIENT_PRESETS["purple_gradient"])
+GRADIENT_6_CYAN_PINK: Final[list[str]] = list(GRADIENT_PRESETS["midnight"])
+GRADIENT_7_FULL_FLOW: Final[list[str]] = list(GRADIENT_PRESETS["sunset"])
+GRADIENT_8_SYNTHWAVE: Final[list[str]] = list(GRADIENT_PRESETS["cyberpunk"])
+GRADIENT_8_SYNTHWAVE_REV: Final[list[str]] = list(reversed(GRADIENT_PRESETS["cyberpunk"]))
 
 EIGENSCRIBE_GRADIENTS: Final[dict[str, list[str]]] = {
     "gradient_0": GRADIENT_0_CYANS,
@@ -396,70 +305,27 @@ EIGENSCRIBE_GRADIENTS: Final[dict[str, list[str]]] = {
     "gradient_8_rev": GRADIENT_8_SYNTHWAVE_REV,
 }
 
-FOUR_COLOR_ACCENT: Final[list[str]] = ["#38fe52", "#3881fe", "#fe38e4", "#feb538"]
-
-RAMP_GREEN: Final[list[str]] = ["#071a12", "#064e3b", "#059669", "#31ff48", "#b7ffcf"]
-RAMP_BLUE: Final[list[str]] = ["#06152b", "#003b73", "#0070eb", "#00b8ff", "#b8f6ff"]
-RAMP_PURPLE: Final[list[str]] = ["#120a24", "#3b176e", "#7c3aed", "#a855f7", "#d8b4fe"]
-RAMP_MAGENTA: Final[list[str]] = ["#210817", "#7c174f", "#ad1457", "#f72585", "#ffb4f6"]
-
-PALETTE_PINK_AMBER: Final[list[str]] = [
-    "#f75594",
-    "#f7556b",
-    "#f76755",
-    "#f78f55",
-    "#f7b855",
-]
-PALETTE_NEON_GREEN: Final[list[str]] = [
-    "#81fe38",
-    "#50fe38",
-    "#38fe52",
-    "#38fe84",
-    "#38feb5",
-]
-PALETTE_CYAN_BLUE: Final[list[str]] = [
-    "#00ff97",
-    "#00ffd6",
-    "#00e8ff",
-    "#00a8ff",
-    "#0068ff",
-]
-PALETTE_BLUE_VIOLET: Final[list[str]] = [
-    "#52d6ff",
-    "#52abff",
-    "#5280ff",
-    "#5255ff",
-    "#7a52ff",
-]
-PALETTE_INDIGO_MAGENTA: Final[list[str]] = [
-    "#527cf5",
-    "#5254f5",
-    "#7952f5",
-    "#a252f5",
-    "#ca52f5",
+FOUR_COLOR_ACCENT: Final[list[str]] = [
+    COLOR_PALETTE["accent_green"],
+    COLOR_PALETTE["accent_blue"],
+    COLOR_PALETTE["accent_magenta"],
+    COLOR_PALETTE["accent_amber"],
 ]
 
-RAMP_DEEP_PURPLE: Final[list[str]] = [
-    "#462c96",
-    "#33216e",
-    "#211547",
-    "#0f0920",
-    "#000000",
-]
-RAMP_DEEP_VIOLET: Final[list[str]] = [
-    "#371f9d",
-    "#281673",
-    "#190e48",
-    "#0a061d",
-    "#000000",
-]
-RAMP_SKY_BLUE: Final[list[str]] = [
-    "#66c4ff",
-    "#33b1ff",
-    "#009dff",
-    "#007ecc",
-    "#005e99",
-]
+RAMP_GREEN: Final[list[str]] = list(GRADIENT_PRESETS["green_gradient"])
+RAMP_BLUE: Final[list[str]] = list(GRADIENT_PRESETS["blue_gradient"])
+RAMP_PURPLE: Final[list[str]] = list(GRADIENT_PRESETS["purple_gradient"])
+RAMP_MAGENTA: Final[list[str]] = list(GRADIENT_PRESETS["sunset"])
+
+PALETTE_PINK_AMBER: Final[list[str]] = list(GRADIENT_PRESETS["sunset"])
+PALETTE_NEON_GREEN: Final[list[str]] = list(GRADIENT_PRESETS["green_gradient"])
+PALETTE_CYAN_BLUE: Final[list[str]] = list(GRADIENT_PRESETS["blue_gradient"])
+PALETTE_BLUE_VIOLET: Final[list[str]] = list(GRADIENT_PRESETS["purple_gradient"])
+PALETTE_INDIGO_MAGENTA: Final[list[str]] = list(GRADIENT_PRESETS["cyberpunk"])
+
+RAMP_DEEP_PURPLE: Final[list[str]] = list(GRADIENT_PRESETS["purple_gradient"])
+RAMP_DEEP_VIOLET: Final[list[str]] = list(GRADIENT_PRESETS["purple_gradient"])
+RAMP_SKY_BLUE: Final[list[str]] = list(GRADIENT_PRESETS["blue_gradient"])
 
 HIGH_CONTRAST_CYCLE: Final[list[str]] = [
     COLOR_PRIMARY_LIGHT,
@@ -472,12 +338,12 @@ HIGH_CONTRAST_CYCLE: Final[list[str]] = [
     COLOR_MATH,
 ]
 
-SEPHIRAH_CYCLE: Final[list[str]] = EIGEN_NODE_COLORS
+SEPHIRAH_CYCLE: Final[list[str]] = SEPHIRAH_NODE_COLORS
 
 STYLE_1_PALETTE: Final[dict[str, str]] = {
     "primary": COLOR_PRIMARY_LIGHT,
     "secondary": COLOR_SECONDARY,
-    "accent": "#f472b6",
+    "accent": COLOR_PALETTE["soft_rose"],
 }
 
 NETWORKX_GRAPHS_PALETTE: Final[dict[str, str]] = {
@@ -489,9 +355,9 @@ NETWORKX_GRAPHS_PALETTE: Final[dict[str, str]] = {
 
 STYLE_3_PALETTE: Final[dict[str, str]] = {
     "metric_primary": COLOR_PRIMARY_LIGHT,
-    "metric_secondary": "#00ff7f",
-    "metric_tertiary": "#ff9d57",
-    "metric_quaternary": "#a855f7",
+    "metric_secondary": COLOR_PALETTE["green_jade"],
+    "metric_tertiary": COLOR_PALETTE["apricot"],
+    "metric_quaternary": COLOR_PALETTE["bright_purple"],
 }
 
 STYLE_4_PALETTE: Final[dict[str, str]] = {
@@ -600,7 +466,15 @@ HEATMAP_LIGHT_GREEN_TO_DARK_GREEN: Final[LinearSegmentedColormap] = (
 # Heatmap style 4: High-Contrast Cyclic Phase Colormap
 HEATMAP_CYCLIC_PHASE: Final[LinearSegmentedColormap] = create_eigenscribe_colormap(
     "eigenscribe_cyclic_phase",
-    ["#0070eb", "#0a95eb", "#14b5ff", "#00f0ff", "#a855f7", "#5e17eb", "#0070eb"],
+    [
+        COLOR_PALETTE["node-4"],
+        COLOR_PALETTE["skyline_blue"],
+        COLOR_PALETTE["node-3"],
+        COLOR_PALETTE["bright_cyan"],
+        COLOR_PALETTE["bright_purple"],
+        COLOR_PALETTE["node-7"],
+        COLOR_PALETTE["node-4"],
+    ],
 )
 
 # Heatmap style 5: Deep Cosmic Void to Luminous Cyan
@@ -616,17 +490,7 @@ HEATMAP_COSMIC_CYAN: Final[LinearSegmentedColormap] = create_eigenscribe_colorma
     ],
 )
 
-HEATMAP_COSMIC_SEPHIRAH: Final[LinearSegmentedColormap] = create_eigenscribe_colormap(
-    "eigenscribe_cosmic_sephirah",
-    [
-        COLOR_BG_COSMIC_VOID,
-        COLOR_BG_COSMIC,
-        COLOR_PRIMARY_DARK,
-        COLOR_PRIMARY,
-        COLOR_PRIMARY_LIGHT,
-        COLOR_LUMINOUS_CYAN,
-    ],
-)
+HEATMAP_COSMIC_SEPHIRAH: Final[LinearSegmentedColormap] = HEATMAP_COSMIC_CYAN
 
 # Heatmap style 6: Cosmic Void to Electric Cyan
 HEATMAP_COSMIC_VOID_TO_CYAN: Final[LinearSegmentedColormap] = (
@@ -653,21 +517,7 @@ HEATMAP_COSMIC_SPECTRUM: Final[LinearSegmentedColormap] = create_eigenscribe_col
     ],
 )
 
-HEATMAP_SEPHIRAH_SPECTRUM: Final[LinearSegmentedColormap] = create_eigenscribe_colormap(
-    "eigenscribe_sephirah_spectrum",
-    [
-        EIGEN_NODES["node_9"],
-        EIGEN_NODES["node_8"],
-        EIGEN_NODES["node_7"],
-        EIGEN_NODES["node_6"],
-        EIGEN_NODES["node_5"],
-        EIGEN_NODES["node_4"],
-        EIGEN_NODES["node_3"],
-        EIGEN_NODES["node_2"],
-        EIGEN_NODES["node_1"],
-        EIGEN_NODES["node_0"],
-    ],
-)
+HEATMAP_SEPHIRAH_SPECTRUM: Final[LinearSegmentedColormap] = HEATMAP_COSMIC_SPECTRUM
 
 # Signature Gradients Colormaps
 HEATMAP_GRADIENT_0: Final[LinearSegmentedColormap] = create_eigenscribe_colormap(
@@ -705,25 +555,19 @@ HEATMAP_SYNTHWAVE: Final[LinearSegmentedColormap] = create_eigenscribe_colormap(
 HEATMAP_RAMP_GREEN: Final[LinearSegmentedColormap] = create_eigenscribe_colormap(
     "eigenscribe_ramp_green", RAMP_GREEN
 )
-HEATMAP_RAMP_BLUE: Final[LinearSegmentedColormap] = create_eigenscribe_colormap(
-    "eigenscribe_ramp_blue", RAMP_BLUE
-)
-HEATMAP_RAMP_PURPLE: Final[LinearSegmentedColormap] = create_eigenscribe_colormap(
-    "eigenscribe_ramp_purple", RAMP_PURPLE
-)
-HEATMAP_RAMP_MAGENTA: Final[LinearSegmentedColormap] = create_eigenscribe_colormap(
-    "eigenscribe_ramp_magenta", RAMP_MAGENTA
-)
+HEATMAP_RAMP_BLUE: Final[LinearSegmentedColormap] = HEATMAP_GRADIENT_2
+HEATMAP_RAMP_PURPLE: Final[LinearSegmentedColormap] = HEATMAP_GRADIENT_5
+HEATMAP_RAMP_MAGENTA: Final[LinearSegmentedColormap] = HEATMAP_GRADIENT_7
 
 # Plotly Format Cyclic Phase Colorscale
 PLOTLY_CYCLIC_PHASE_COLORSCALE: Final[list[list[Any]]] = [
-    [0.0, "#0070eb"],
-    [0.2, "#0A95EB"],
-    [0.35, "#14B5FF"],
-    [0.5, "#00f0ff"],
-    [0.65, "#A855F7"],
-    [0.8, "#5E17EB"],
-    [1.0, "#0070eb"],
+    [0.0, COLOR_PALETTE["node-4"]],
+    [0.2, COLOR_PALETTE["skyline_blue"]],
+    [0.35, COLOR_PALETTE["node-3"]],
+    [0.5, COLOR_PALETTE["bright_cyan"]],
+    [0.65, COLOR_PALETTE["bright_purple"]],
+    [0.8, COLOR_PALETTE["node-7"]],
+    [1.0, COLOR_PALETTE["node-4"]],
 ]
 
 # Semantic Colormaps
@@ -747,11 +591,11 @@ SEMANTIC_COLORMAPS: Final[dict[str, LinearSegmentedColormap]] = {
     ),
     "Hamiltonian Energy": create_eigenscribe_colormap(
         "eigenscribe_energy",
-        [COLOR_PRIMARY, COLOR_SURFACE, "#ff9d57"],
+        [COLOR_PRIMARY, COLOR_SURFACE, COLOR_PALETTE["apricot"]],
     ),
     "Temporal Flow": create_eigenscribe_colormap(
         "eigenscribe_temporal",
-        [COLOR_BG, "#5280ff", "#00e8ff", COLOR_TERTIARY_LIGHT],
+        [COLOR_BG, COLOR_PALETTE["periwinkle_blue"], COLOR_PRIMARY_LIGHT, COLOR_TERTIARY_LIGHT],
     ),
     "Gradient 4 (Cyan-Purple)": HEATMAP_GRADIENT_4,
     "Gradient 6 (Cyan-Pink)": HEATMAP_GRADIENT_6,
@@ -808,8 +652,8 @@ def get_eigenscribe_rcparams(cosmic: bool = False) -> dict[str, Any]:
     Parameters
     ----------
     cosmic : bool, default=False
-        If True, applies deep cosmic void foundations (#050812 / #0a0f1f) instead
-        of standard dark slate (#0d1117 / #161b22).
+        If True, applies the deep cosmic foundations from COLOR_PALETTE instead of
+        the standard dark slate and surface tokens.
 
     Returns
     -------

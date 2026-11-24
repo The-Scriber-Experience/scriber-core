@@ -1,4 +1,4 @@
-# src/scriber_core/frontend/the_scriber_experience/__init__.py
+# src/eigenscribe/frontend/the_scriber_experience/__init__.py
 """
 The Scriber Experience (TSE) - Frontend Design & Styling System.
 Unifies style design tokens, terminal CLI utilities, and scientific plot themes.
@@ -27,24 +27,8 @@ from .plots import (
     plot_eigenscribe_heatmap,
     register_colormaps,
 )
-from scriber_core.frontend.colors import (
-    CLI_COLORS,
-    COLOR_PALETTE,
-    EIGEN_COLORS,
-    EIGEN_LABEL_COLORS,
-    EIGEN_NODE_COLORS,
-    SEMANTIC_COLORS,
-    TSE_COLORS,
-    Color,
-    RGB,
-    hex_to_rgb,
-)
-from scriber_core.frontend.gradients import (
-    GRADIENT_PRESETS,
-    PRESETS,
-    TSE_GRADIENTS,
-    multi_gradient,
-)
+from eigenscribe.frontend.colors import COLOR_PALETTE, Color, RGB, hex_to_rgb
+from eigenscribe.frontend.gradients import GRADIENT_PRESETS, multi_gradient
 
 __all__: list[str] = [
     # Submodules
@@ -54,15 +38,7 @@ __all__: list[str] = [
     "RGB",
     "Color",
     "COLOR_PALETTE",
-    "TSE_COLORS",
-    "SEMANTIC_COLORS",
-    "CLI_COLORS",
-    "EIGEN_COLORS",
-    "EIGEN_NODE_COLORS",
-    "EIGEN_LABEL_COLORS",
     "GRADIENT_PRESETS",
-    "TSE_GRADIENTS",
-    "PRESETS",
     "hex_to_rgb",
     "multi_gradient",
     # Plots

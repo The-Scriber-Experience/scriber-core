@@ -18,8 +18,8 @@ from typing import Final, NamedTuple, Sequence
 
 import click
 
-from scriber_core.frontend.colors import COLOR_PALETTE, hex_to_rgb
-from scriber_core.frontend.gradients import GRADIENT_PRESETS, multi_gradient
+from eigenscribe.frontend.colors import COLOR_PALETTE, hex_to_rgb
+from eigenscribe.frontend.gradients import GRADIENT_PRESETS, multi_gradient
 
 try:
     from .branding import (
@@ -33,7 +33,7 @@ try:
         ansi_color,
     )
 except ImportError:
-    from scriber_core.cli.branding import (
+    from eigenscribe.cli.branding import (
         BORDER_FRAME_COLOR,
         CMD_NAME_COLOR,
         DESC_TEXT_COLOR,
@@ -64,10 +64,10 @@ __all__: list[str] = [
 
 # Semantic Badges mapped to COLOR_PALETTE
 BADGE_COLORS: Final[dict[str, str]] = {
-    "CORE": COLOR_PALETTE["success_emerald"],  # #10b981 - Verified core tools
-    "STYLE": COLOR_PALETTE["midwest_indigo"],  # #6f78fa - Visual styling & gradients
-    "TOKEN": COLOR_PALETTE["vivid_pink"],  # #f72585 - Color tokens and palettes
-    "DIAG": COLOR_PALETTE["warning_amber"],  # #f7c548 - Verification & diagnostics
+    "CORE": COLOR_PALETTE["success_emerald"],
+    "STYLE": COLOR_PALETTE["midwest_indigo"],
+    "TOKEN": COLOR_PALETTE["vivid_pink"],
+    "DIAG": COLOR_PALETTE["warning_amber"],
 }
 
 
@@ -106,7 +106,7 @@ REGISTERED_COMMANDS: Final[tuple[CommandDescriptor, ...]] = (
         name="colors-table",
         category="🎨 COLOR PALETTES & SWATCHES",
         badge="CORE",
-        syntax="python -m scriber_core.cli.colors_table [--sort <key>] [--style <box>] [--block-char <c>]",
+        syntax="python -m eigenscribe.cli.colors_table [--sort <key>] [--style <box>] [--block-char <c>]",
         description="Render COLOR_PALETTE table with TrueColor swatch blocks, hex codes, RGB vectors, and luminance metrics.",
     ),
     CommandDescriptor(
@@ -114,7 +114,7 @@ REGISTERED_COMMANDS: Final[tuple[CommandDescriptor, ...]] = (
         category="🎨 COLOR PALETTES & SWATCHES",
         badge="TOKEN",
         syntax="eigenscribe colors [--all-256] [--spectrum] [--table]",
-        description="Inspect terminal color palettes, ANSI 256-color index, and 10-node EIGEN spectrum.",
+        description="Browse canonical palette tokens, ANSI 256-color indices, and the 10-node spectrum.",
     ),
     CommandDescriptor(
         name="gradient",
@@ -127,7 +127,7 @@ REGISTERED_COMMANDS: Final[tuple[CommandDescriptor, ...]] = (
         name="banner",
         category="🌈 TRUECOLOR GRADIENTS & BANNERS",
         badge="STYLE",
-        syntax="python -m scriber_core.cli banner [--title <text>] [--subtitle <text>]",
+        syntax="eigenscribe banner [--title <text>] [--subtitle <text>]",
         description="Display signature TrueColor ASCII block banner headers and gradient rule dividers.",
     ),
     CommandDescriptor(
@@ -149,13 +149,13 @@ REGISTERED_COMMANDS: Final[tuple[CommandDescriptor, ...]] = (
         category="🏛️ WORKSPACE ARCHITECTURE & TOKENS",
         badge="CORE",
         syntax="eigenscribe info",
-        description="Display Scriber Core architectural index, 4-layer design token stack, and workspace guidelines.",
+        description="Show package details, common commands, and color/theme sources.",
     ),
     CommandDescriptor(
         name="commands",
         category="🏛️ WORKSPACE ARCHITECTURE & TOKENS",
         badge="CORE",
-        syntax="python -m scriber_core.cli [commands]",
+        syntax="eigenscribe [commands]",
         description="Display the complete color-coded command index, syntax references, and tool directory.",
     ),
     CommandDescriptor(
@@ -183,7 +183,7 @@ REGISTERED_COMMANDS: Final[tuple[CommandDescriptor, ...]] = (
         name="smoke-test",
         category="💨 DIAGNOSTICS & VERIFICATION",
         badge="DIAG",
-        syntax="python -m scriber_core.cli.colors_table --smoke-test",
+        syntax="python -m eigenscribe.cli.colors_table --smoke-test",
         description="Execute deterministic smoke test suite, color calculations, and verification assertions.",
     ),
 )
@@ -296,7 +296,7 @@ def run_smoke_test() -> bool:
     bool
         True if all command catalog checks pass.
     """
-    print("💨 Running src/scriber_core/cli/command_catalog.py smoke tests...")
+    print("💨 Running src/eigenscribe/cli/command_catalog.py smoke tests...")
 
     # Verify badge colors
     assert len(BADGE_COLORS) == 4
@@ -319,7 +319,7 @@ def run_smoke_test() -> bool:
     commands_output = render_commands_list()
     assert "\033[38;2;" in commands_output
 
-    print("✅ src/scriber_core/cli/command_catalog.py smoke tests passed successfully.\n")
+    print("✅ src/eigenscribe/cli/command_catalog.py smoke tests passed successfully.\n")
     return True
 
 

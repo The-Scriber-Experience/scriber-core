@@ -2,9 +2,9 @@
 """
 test_cli_messaging.py
 
-Comprehensive unit and integration test suite for Scriber Core messaging modules:
-`src/scriber_core/cli/messaging.py`, `src/scriber_core/cli/__init__.py`,
-and `src/scriber_core/frontend/__init__.py`.
+Comprehensive unit and integration test suite for Eigenscribe messaging modules:
+`src/eigenscribe/cli/messaging.py`, `src/eigenscribe/cli/__init__.py`,
+and `src/eigenscribe/frontend/__init__.py`.
 """
 
 from __future__ import annotations
@@ -15,7 +15,8 @@ import click
 from click.testing import CliRunner
 import pytest
 
-from scriber_core.cli.messaging import (
+from eigenscribe.cli import messaging as messaging_module
+from eigenscribe.cli.messaging import (
     EIGENSCRIBE_PALETTE,
     PRIMARY_GRADIENT,
     SECONDARY_GRADIENT,
@@ -41,7 +42,7 @@ from scriber_core.cli.messaging import (
     run_smoke_test,
     supports_256_color,
 )
-from scriber_core.cli import (
+from eigenscribe.cli import (
     EIGENSCRIBE_PALETTE as CLI_PALETTE,
     STYLE_MAP as CLI_STYLE_MAP,
     ansi_256 as cli_ansi_256,
@@ -61,7 +62,7 @@ from scriber_core.cli import (
     supports_256_color as cli_pkg_supports_256_color,
     run_messaging_smoke_test,
 )
-from scriber_core.cli.messaging import (
+from eigenscribe.cli.messaging import (
     EIGENSCRIBE_PALETTE as FRONTEND_PALETTE,
     STYLE_MAP as FRONTEND_STYLE_MAP,
     ansi_256 as fe_ansi_256,
@@ -82,7 +83,7 @@ from scriber_core.cli.messaging import (
     run_smoke_test as fe_run_smoke_test,
     supports_256_color as fe_supports_256_color,
 )
-from scriber_core.cli import (
+from eigenscribe.cli import (
     EIGENSCRIBE_PALETTE as ROOT_FE_PALETTE,
     STYLE_MAP as ROOT_FE_STYLE_MAP,
     ansi_256 as root_fe_ansi_256,
@@ -101,7 +102,28 @@ from scriber_core.cli import (
     render_rule as root_fe_render_rule,
     supports_256_color as root_fe_supports_256_color,
 )
-from scriber_core.cli.main import cli as main_cli
+from eigenscribe.cli.main import cli as main_cli
+from eigenscribe.frontend.colors import COLOR_PALETTE, hex_to_rgb
+from eigenscribe.frontend.gradients import GRADIENT_PRESETS
+
+
+def test_messaging_enables_vt_before_printing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Set up Windows terminal support before emitting ANSI-styled output."""
+    events: list[object] = []
+    monkeypatch.setattr(
+        messaging_module, "enable_vt_mode", lambda: events.append("vt")
+    )
+    monkeypatch.setattr(
+        messaging_module.click,
+        "echo",
+        lambda *_args, **kwargs: events.append(("echo", kwargs.get("color"))),
+    )
+
+    messaging_module.cli_info("VT setup check")
+
+    assert events == ["vt", ("echo", True)]
 
 
 @pytest.fixture
@@ -156,9 +178,13 @@ def test_palette_and_style_map_integrity() -> None:
     assert EIGENSCRIBE_PALETTE["eigen_accent_magenta"] == 206
     assert EIGENSCRIBE_PALETTE["eigen_accent_amber"] == 215
 
-    # Check STYLE_MAP references valid palette keys
+    # Check STYLE_MAP references canonical palette tokens
     for level, palette_key in STYLE_MAP.items():
-        assert palette_key in EIGENSCRIBE_PALETTE
+        assert palette_key in COLOR_PALETTE
+
+    # Legacy palette names remain valid, but resolve to canonical TrueColor tokens.
+    for palette_key in EIGENSCRIBE_PALETTE:
+        assert "38;2;" in render_echo("", color=palette_key)
 
     # Check _FALLBACK_16 mapping
     assert len(_FALLBACK_16) >= 8
@@ -191,6 +217,33 @@ def test_ansi_256_formatting() -> None:
 
     # Non-existent key should return plain text
     assert ansi_256("invalid_color_key", "Raw Text") == "Raw Text"
+
+
+@pytest.mark.parametrize(("name", "hex_code"), COLOR_PALETTE.items())
+def test_render_echo_uses_canonical_truecolor(name: str, hex_code: str) -> None:
+    """Verify every canonical palette token is rendered using its exact RGB value."""
+    rgb = hex_to_rgb(hex_code)
+    expected = f"\033[38;2;{rgb[0]};{rgb[1]};{rgb[2]}m{name}\033[0m"
+
+    assert render_echo(name, color=name) == expected
+
+
+@pytest.mark.parametrize(
+    ("level", "token"),
+    [
+        ("info", "sky_info"),
+        ("success", "success_emerald"),
+        ("warning", "warning_amber"),
+        ("error", "error_crimson"),
+        ("highlight", "bright_pink"),
+    ],
+)
+def test_render_message_uses_canonical_semantic_colors(level: str, token: str) -> None:
+    """Verify semantic output matches the palette's canonical status colors."""
+    rgb = hex_to_rgb(COLOR_PALETTE[token])
+    expected = f"\033[38;2;{rgb[0]};{rgb[1]};{rgb[2]}mStatus\033[0m"
+
+    assert render_message("Status", level=level) == expected
 
 
 def test_ansi_256_raw() -> None:
@@ -240,12 +293,12 @@ def test_render_echo_and_cli_echo(capsys: pytest.CaptureFixture[str]) -> None:
     """Verify render_echo and cli_echo with direct palette keys and fallback levels."""
     # Direct color
     styled_color = render_echo("Dragon", color="eigen_purple", bold=True)
-    assert "\033[1;38;5;129mDragon\033[0m" == styled_color
+    assert "\033[1;38;2;121;82;245mDragon\033[0m" == styled_color
 
     # Level fallback
     styled_level = render_echo("Beast", level="success", bold=False)
     assert "Beast" in styled_level
-    assert "38;5;41m" in styled_level
+    assert "38;2;16;185;129m" in styled_level
 
     # Plain fallback
     plain = render_echo("Plain text")
@@ -261,7 +314,7 @@ def test_render_rule_and_cli_rule(capsys: pytest.CaptureFixture[str]) -> None:
     """Verify render_rule and cli_rule construct valid divider lines."""
     rule_str = render_rule(char="═", width=42, level="rule")
     assert "═" * 42 in rule_str
-    assert "38;5;27m" in rule_str
+    assert "38;2;0;142;255m" in rule_str
 
     cli_rule(char="─", width=50)
     captured = capsys.readouterr()
@@ -275,6 +328,9 @@ def test_render_banner_and_cli_banner(capsys: pytest.CaptureFixture[str]) -> Non
     assert "MY APPLICATION" in plain
     assert "Secondary subtitle line" in plain
     assert "─" in plain
+    aurora_banner = render_banner("Aurora", width=12, colors=GRADIENT_PRESETS["aurora"])
+    assert "\033[1;38;2;6;182;212m" in aurora_banner
+    assert "─" * 12 in re.sub(r"\x1b\[[0-9;]*m", "", aurora_banner)
 
     cli_banner("DIRECT BANNER", "Direct subtitle")
     captured = capsys.readouterr()
@@ -328,7 +384,7 @@ def test_all_smoke_tests() -> None:
 
 
 def test_messaging_cli_commands(runner: CliRunner) -> None:
-    """Verify Click subcommands in src/scriber_core/cli/messaging.py."""
+    """Verify Click subcommands in src/eigenscribe/cli/messaging.py."""
     # Banner command
     res_banner = runner.invoke(messaging_cli, ["banner", "MESSAGING BANNER", "-s", "Testing Banner"])
     assert res_banner.exit_code == 0
@@ -344,7 +400,8 @@ def test_messaging_cli_commands(runner: CliRunner) -> None:
     # Palette command
     res_pal = runner.invoke(messaging_cli, ["palette"])
     assert res_pal.exit_code == 0
-    assert "256-Color Palette Showcase" in res_pal.output
+    assert "TrueColor Palette Showcase" in res_pal.output
+    assert "38;2;0;142;255m" in res_pal.output
 
     # Smoke test command
     res_smoke = runner.invoke(messaging_cli, ["smoke-test"])
@@ -353,13 +410,14 @@ def test_messaging_cli_commands(runner: CliRunner) -> None:
 
 
 def test_main_cli_messaging_commands(runner: CliRunner) -> None:
-    """Verify Click subcommands in src/scriber_core/cli/main.py (info, gradient, colors, message, rule)."""
+    """Verify Click subcommands in src/eigenscribe/cli/main.py (info, gradient, colors, message, rule)."""
     # Info command
     res_info = runner.invoke(main_cli, ["info"])
     assert res_info.exit_code == 0
     plain_info = re.sub(r"\x1b\[[0-9;]*m", "", res_info.output)
-    assert "SCRIBER CORE ARCHITECTURAL OVERVIEW" in plain_info
-    assert "4-Layer Design Token Stack" in plain_info
+    assert "EIGENSCRIBE INFO" in plain_info
+    assert "COMMON COMMANDS" in plain_info
+    assert "COLOR AND THEME SOURCES" in plain_info
 
     # Gradient command
     res_grad = runner.invoke(main_cli, ["gradient", "Cyberpunk Gradient", "-p", "cyberpunk"])
@@ -373,8 +431,9 @@ def test_main_cli_messaging_commands(runner: CliRunner) -> None:
     # Colors command
     res_colors = runner.invoke(main_cli, ["colors", "--spectrum"])
     assert res_colors.exit_code == 0
-    assert "Signature TSE Palette" in res_colors.output
-    assert "Vibrant 10-Node EIGEN Spectrum" in res_colors.output
+    plain_colors = re.sub(r"\x1b\[[0-9;]*m", "", res_colors.output)
+    assert "CANONICAL COLOR TOKENS" in plain_colors
+    assert "VIBRANT 10-NODE SPECTRUM" in plain_colors
 
     # Message command
     res_msg = runner.invoke(main_cli, ["message", "Custom Info", "--level", "info"])

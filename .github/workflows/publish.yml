@@ -9,23 +9,21 @@
 # It uses **Trusted Publishing (OIDC)** — no API tokens or secrets are stored in the repo.
 #
 # ── One-time setup (required before the first release) ───────────────────────────────────────────────
-#   1. Create the project on PyPI (name: `scriber-core`). For the very first upload you may need to
-#      use the "pending publisher" flow: https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/
-#   2. On PyPI → your project → Settings → Publishing → "Add a new pending/trusted publisher":
+#   1. In the existing PyPI project `scriber-core`, open Settings → Publishing → "Add a new publisher":
 #        • Owner:            The-Scriber-Experience
 #        • Repository name:  scriber-core
 #        • Workflow name:    publish.yml
 #        • Environment name: pypi
-#      (Repeat on https://test.pypi.org with Environment name `testpypi` if you want TestPyPI runs.)
-#   3. (Recommended) In GitHub → Settings → Environments, create environments named `pypi` and
+#      (Optionally configure the same publisher on TestPyPI with environment name `testpypi`.)
+#   2. (Recommended) In GitHub → Settings → Environments, create environments named `pypi` and
 #      `testpypi`. You can add required reviewers to `pypi` to gate production releases behind a
 #      manual approval.
 #
 # ── How to release ──────────────────────────────────────────────────────────────────────────────────
-#   • Production: bump the version in pyproject.toml + src/scriber_core/__init__.py, update CHANGELOG.md, then push
-#       an annotated tag, e.g.  `git tag -a v1.0.1 -m "Release 1.0.1" && git push origin main --tags`.
-#       The tag push runs tests → builds → publishes to PyPI automatically.
-#   • Dry run / TestPyPI: use the "Run workflow" button (workflow_dispatch) and pick a target.
+#   • Production: update pyproject.toml, src/eigenscribe/__init__.py, and CHANGELOG.md; commit and push
+#       the release commit, then push an annotated matching version tag (e.g. v2.0.0).
+#       The tag must match pyproject.toml; the tag push runs tests → builds → publishes to PyPI.
+#   • TestPyPI: use "Run workflow" (workflow_dispatch) on the release commit; manual runs only publish there.
 #
 # ── Prefer API tokens instead of OIDC? ────────────────────────────────────────────────────────────────
 #   Remove the `permissions: id-token: write` + `environment:` blocks from the publish jobs, add a
@@ -38,19 +36,16 @@ name: Publish to PyPI
 on:
   push:
     tags:
-      # Publish on SemVer version tags, e.g. v1.0.0, v1.2.3rc1, v2.0.0a1, v2.0.0b2
-      - "v[0-9]+.[0-9]+.[0-9]+"
-      - "v[0-9]+.[0-9]+.[0-9]+rc[0-9]+"
-      - "v[0-9]+.[0-9]+.[0-9]+[ab][0-9]+"
+      # GitHub tag filters are globs; the build job validates the SemVer tag against pyproject.toml.
+      - "v*"
   workflow_dispatch:
     inputs:
       publish_target:
-        description: "Manual run target (tag pushes always go to PyPI)"
+        description: "Manual runs publish to TestPyPI only"
         type: choice
         default: testpypi
         options:
           - testpypi
-          - pypi
 
 # Least-privilege default for every job; the publishing jobs opt into `id-token: write` explicitly.
 permissions:
@@ -95,14 +90,43 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
+      - name: Verify release tag matches project version
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          VERSION="$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -n 1)"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [[ ! "$TAG_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([ab][0-9]+|rc[0-9]+)?$ ]]; then
+            echo "Release tag must be vMAJOR.MINOR.PATCH (optionally with a/b/rc suffix); got $GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+          if [[ "$TAG_VERSION" != "$VERSION" ]]; then
+            echo "Release tag $TAG_VERSION does not match pyproject.toml version $VERSION" >&2
+            exit 1
+          fi
+
       - name: Build sdist and wheel
         run: uv build
 
       - name: Smoke-test the built wheel
         run: >-
           uv run --isolated --no-project --with dist/*.whl
-          python -c "import importlib.metadata as m; import scriber_core; from scriber_core import frontend, cli;
-          print('scriber-core', m.version('scriber-core'), '| scriber_core', scriber_core.__version__, '| frontend', frontend.__version__)"
+          python -c "import importlib.metadata as m; import importlib.util; import eigenscribe; from eigenscribe import frontend, cli;
+          from eigenscribe.cli.branding import CLI_VERSION;
+          assert importlib.util.find_spec('scriber_core') is None;
+          assert any(entry.name == 'eigenscribe' and entry.value == 'eigenscribe.cli.main:main' for entry in m.distribution('scriber-core').entry_points);
+          assert m.version('scriber-core') == eigenscribe.__version__ == frontend.__version__ == CLI_VERSION;
+          print('scriber-core', m.version('scriber-core'), '| eigenscribe', eigenscribe.__version__, '| frontend', frontend.__version__)"
+
+      - name: Smoke-test the installed CLI command
+        run: uv run --isolated --no-project --with dist/*.whl eigenscribe --help
+
+      - name: Smoke-test installed module launchers
+        run: >-
+          uv run --isolated --no-project --with dist/*.whl
+          python -c "import subprocess, sys;
+          subprocess.run([sys.executable, '-m', 'eigenscribe', '--help'], check=True, capture_output=True);
+          subprocess.run([sys.executable, '-m', 'eigenscribe.cli', '--help'], check=True, capture_output=True)"
 
       - name: Upload distribution artifacts
         uses: actions/upload-artifact@v4
@@ -112,12 +136,12 @@ jobs:
           if-no-files-found: error
 
   # -------------------------------------------------------------------------------------------------------
-  # 3️⃣ Publish to PyPI — on version-tag pushes, or a manual run with target = pypi.
+  # 3️⃣ Publish to PyPI — on version-tag pushes only.
   # -------------------------------------------------------------------------------------------------------
   publish-pypi:
     name: Publish to PyPI
     needs: build
-    if: github.event_name == 'push' || github.event.inputs.publish_target == 'pypi'
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: pypi

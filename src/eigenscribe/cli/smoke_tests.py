@@ -17,6 +17,8 @@ from __future__ import annotations
 
 import re
 
+from eigenscribe.frontend.colors import COLOR_PALETTE
+
 try:
     from .branding import (
         EIGENSCRIBE_BLOCK_TEXT,
@@ -36,18 +38,18 @@ try:
         supports_256_color,
     )
 except ImportError:
-    from scriber_core.cli.branding import (
+    from eigenscribe.cli.branding import (
         EIGENSCRIBE_BLOCK_TEXT,
         PRIMARY_GRADIENT,
         SECONDARY_GRADIENT,
         ansi_color,
         render_brand_header,
     )
-    from scriber_core.cli.command_catalog import (
+    from eigenscribe.cli.command_catalog import (
         REGISTERED_COMMANDS,
         render_commands_list,
     )
-    from scriber_core.cli.messaging import (
+    from eigenscribe.cli.messaging import (
         EIGENSCRIBE_PALETTE,
         render_message,
         render_rule,
@@ -67,7 +69,7 @@ __all__: list[str] = [
 
 def run_smoke_test() -> bool:
     """Execute smoke test assertions for the Scriber Core CLI suite."""
-    print("💨 Running src/scriber_core/cli smoke tests...")
+    print("💨 Running src/eigenscribe/cli smoke tests...")
 
     # 1. Block text existence and gradient definition
     assert len(EIGENSCRIBE_BLOCK_TEXT.strip()) > 0
@@ -92,7 +94,7 @@ def run_smoke_test() -> bool:
     assert "info" in plain_commands
 
     # 4. Color formatting helper test
-    test_str = ansi_color("#00e8ff", "test_cyan", bold=True)
+    test_str = ansi_color(COLOR_PALETTE["node-2"], "test_cyan", bold=True)
     assert "\033[1;38;2;0;232;255mtest_cyan\033[0m" == test_str
 
     # 5. Messaging integration assertions
@@ -120,7 +122,7 @@ def run_smoke_test() -> bool:
     try:
         from .main import cli
     except ImportError:
-        from scriber_core.cli.main import cli
+        from eigenscribe.cli.main import cli
 
     assert "info" in cli.commands
     assert "gradient" in cli.commands
@@ -148,7 +150,7 @@ def run_smoke_test() -> bool:
     res_doc = runner.invoke(cli, ["doctor"])
     assert res_doc.exit_code == 0
 
-    print("✅ src/scriber_core/cli smoke tests passed successfully.\n")
+    print("✅ src/eigenscribe/cli smoke tests passed successfully.\n")
     return True
 
 

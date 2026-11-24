@@ -26,11 +26,12 @@ Welcome to the canonical environment index for autonomous development agents. Th
 │       ├── gold-standard.py            # Gold standard numeric integration template
 │       └── visualization_boilerplate.py # Matplotlib, Seaborn & Plotly theme bootstrap template
 ├── src/
-│   └── scriber_core/                 # 📦 Single top-level package (frontend + cli subpackages)
+│   └── eigenscribe/                  # 📦 Single top-level package (frontend + cli subpackages)
 │       ├── __init__.py               # Exports __version__; re-exports frontend & cli subpackages
+│       ├── __main__.py                # Primary package launcher (`python -m eigenscribe`)
 │       ├── cli/                      # 💻 Primary Scriber Core CLI suite & TrueColor tools
 │       │   ├── __init__.py           # CLI package exports & public API
-│       │   ├── __main__.py           # Package execution entry point (`python -m scriber_core.cli`)
+│       │   ├── __main__.py           # Package execution entry point (`python -m eigenscribe.cli`)
 │       │   ├── main.py               # Command router, gradient banners, and command catalog
 │       │   ├── messaging.py          # Semantic status alerts, ANSI 256 palette & banner generator
 │       │   └── colors_table.py       # COLOR_PALETTE table renderer with TrueColor swatches
@@ -55,7 +56,7 @@ Welcome to the canonical environment index for autonomous development agents. Th
 │   ├── AGENTS.md                     # Canonical agent guidelines & workspace directives
 │   └── skills/
 │       └── cosmic-visual-styling/    # Workspace skill for EIGEN / cosmic visual themes & styling
-├── pyproject.toml                    # PyPI packaging & uv dependency configuration (v1.0.0)
+├── pyproject.toml                    # PyPI packaging & uv dependency configuration (v2.0.0)
 └── README.md                         # Master onboarding index (This file)
 ```
 
@@ -65,47 +66,54 @@ Welcome to the canonical environment index for autonomous development agents. Th
 - **Target Runtime Engine**: Python 3.11+
 - **Primary IDE Workspace**: JetBrains PyCharm Professional / IntelliJ IDEA.
 
-## 💻 Scriber Core CLI Suite (`python -m scriber_core.cli`)
+## 💻 Eigenscribe CLI Suite (`eigenscribe`)
 
-`scriber-core` provides a unified, color-coded CLI suite in `src/scriber_core/cli/` featuring signature TrueColor gradient banners, golden ratio-proportioned gradient text, interactive palette tables, and structured command catalogs:
+`scriber-core` provides a unified, color-coded CLI suite in `src/eigenscribe/cli/` featuring signature TrueColor gradient banners, golden ratio-proportioned gradient text, interactive palette tables, and structured command catalogs. The `eigenscribe` console command is the primary interface; the package can also be run with `python -m eigenscribe` or `python -m eigenscribe.cli`:
 
 ```bash
 # Sync dependencies and development tools
 uv sync --extra dev
 
 # Run default CLI entry point (prints SECONDARY_GRADIENT banner & color-coded command catalog)
-uv run python -m scriber_core.cli
+uv run eigenscribe
 
 # Display the high-contrast ADHD-optimized command catalog
-uv run python -m scriber_core.cli commands
+uv run eigenscribe commands
 
 # Render the signature TrueColor block text banner (or custom text)
-uv run python -m scriber_core.cli banner "SCRIBER-CORE"
+uv run eigenscribe banner "SCRIBER-CORE"
 
 # Inspect the canonical COLOR_PALETTE with TrueColor swatch blocks, hex, RGB, and ANSI escapes
-uv run python -m scriber_core.cli colors-table
-uv run python -m scriber_core.cli.colors_table --block-width 6 --sort hue
+uv run eigenscribe colors-table
+uv run python -m eigenscribe.cli.colors_table --block-width 6 --sort hue
 
 # Render TrueColor multi-stop gradients with Golden Ratio keyframe scaling
-uv run python -m scriber_core.cli gradient "Deterministic Autonomous Agent Baseline" --preset eigenscribe
+uv run eigenscribe gradient "Deterministic Autonomous Agent Baseline" --preset eigenscribe
+uv run eigenscribe gradient "Northern Lights" --preset aurora
 
 # Display architecture telemetry, active token counts, and gradient presets
-uv run python -m scriber_core.cli info
+uv run eigenscribe info
 
 # Run built-in self-diagnostics and CLI smoke tests
-uv run python -m scriber_core.cli smoke-test
+uv run eigenscribe smoke-test
 ```
+
+CLI colors are emitted as ANSI TrueColor (24-bit RGB). Use a modern terminal with ANSI/TrueColor support; on Windows, the CLI enables virtual-terminal processing when it can access a console handle. Click 8.5 or newer is required to avoid older Windows ANSI conversion corrupting RGB color sequences. In Git Bash/UCRT64, sync and activate this checkout before using the bare `eigenscribe` command shown in the terminal:
+
+```bash
+uv sync --extra dev
+source .venv/Scripts/activate
+eigenscribe
+```
+
+Alternatively, run `uv run eigenscribe` without activating the environment. Windows MSYS pipe output is configured as UTF-8 unless `PYTHONIOENCODING` is explicitly set. If you installed an editable copy into a separate environment, activate that same environment and run `uv pip install --editable .`; an `eigenscribe` executable elsewhere on `PATH` may still use its own older Click installation. The CLI warns when it detects Click older than 8.5 in an MSYS terminal. Redirected output to ordinary files is left unchanged by Windows console setup. In PyCharm, enable terminal emulation for the Run output console; other terminal emulators or IDE consoles that do not support TrueColor may show limited or no color.
 
 ### 🎯 Cognitive Load & ADHD Semantic Color Coding
 
 The command directory and CLI outputs implement an ergonomic visual hierarchy to eliminate reading fatigue and accelerate command scanning:
-- **`PRIMARY_GRADIENT` (`#00e8ff` → `#008eff` → `#6f78fa` → `#5e17eb`)**: Section headers, category titles, and diagnostic headers proportioned with Golden Ratio decay ($\phi \approx 1.618$).
-- **`SECONDARY_GRADIENT` (`#00a6ff` → `#7952f5` → `#a855f7` → `#ff28a2`)**: Block text banners, subtitles, and decorative framing.
-- **Electric Cyan (`#00e8ff`) & Vivid Sky Blue (`#14b5ff`)**: Primary focal points, actionable command names, and interactive targets.
-- **Pale Lilac (`#d8b4fe`)**: Command arguments, flags, and syntax options.
-- **High-Luminance Ice Blue (`#b8f6ff`)**: Command descriptions and contextual documentation.
-- **Periwinkle Blue (`#5280ff`)**: Structural box-drawing borders and grid dividers.
-- **Status Badges**: `success_emerald` (`#10b981`), `midwest_indigo` (`#6f78fa`), `vivid_pink` (`#f72585`), and `warning_amber` (`#f7c548`).
+- **`PRIMARY_GRADIENT`**: The `eigenscribe` preset for section headers and diagnostic headings, interpolated with Golden Ratio decay ($\phi \approx 1.618$).
+- **`SECONDARY_GRADIENT`**: The `purple_gradient` preset for banners, subtitles, and decorative framing.
+- **Palette tokens**: CLI names, syntax, descriptions, borders, and status badges reference `COLOR_PALETTE` keys such as `node-2`, `pale_lilac`, `ice_blue`, and `success_emerald`.
 
 ---
 
@@ -114,24 +122,24 @@ The command directory and CLI outputs implement an ergonomic visual hierarchy to
 To ensure strict visual fidelity across CLI TrueColor output, Matplotlib/Seaborn plotting themes, dark-mode Mermaid diagrams, and CSS tokens, `scriber-core` enforces a mandatory repo-wide color standard:
 
 1. **Single Source of Truth (`COLOR_PALETTE`)**:
-   - `COLOR_PALETTE` in `src/scriber_core/frontend/colors.py` is the canonical dictionary for all named color variables across the repository.
+   - `COLOR_PALETTE` in `src/eigenscribe/frontend/colors.py` owns all authored hex tokens. Gradients, CLI styling, and plotting themes reference these canonical values instead of defining parallel hex dictionaries.
 2. **Repo-Wide Hex Constraint**:
-   - **All color variables must be converted to / defined as canonical 6-digit hex format (`#rrggbb`)**, or reference valid key names from `COLOR_PALETTE` in `src/scriber_core/frontend/colors.py`.
-   - Never hardcode raw or inconsistent RGB values in downstream modules without a canonical hex reference.
+   - **Color variables reference valid `COLOR_PALETTE` token keys; direct hex values are reserved for the canonical palette and caller-supplied custom colors.**
+   - Convert palette colors with `hex_to_rgb()` rather than repeating RGB constants in downstream modules.
 3. **Deterministic RGB Normalization**:
-   - The `hex_to_rgb(hex_code)` utility in `src/scriber_core/frontend/colors.py` provides deterministic conversion from hex strings to `(R, G, B)` integer tuples for ANSI escape sequence generation (`\033[38;2;R;G;Bm`).
+   - The `hex_to_rgb(hex_code)` utility in `src/eigenscribe/frontend/colors.py` provides deterministic conversion from hex strings to `(R, G, B)` integer tuples for ANSI escape sequence generation (`\033[38;2;R;G;Bm`).
 4. **Golden Ratio Multi-Stop Gradient Interpolation**:
    - Multi-stop gradients computed via `multi_gradient()` scale keyframe segment lengths according to the Golden Ratio ($\phi \approx 1.618$, $w_k = (1/\phi)^k$).
    - Segments taper smoothly from dominant blues and cyans on the left to violets, purples, and magentas on the right.
 
 ---
 
-## 🔱 Legacy Eigenscribe CLI Tooling (`eigenscribe`)
+## 🔱 Additional Eigenscribe CLI Commands (`eigenscribe`)
 
-For backward compatibility with standalone design token inspection, the `eigenscribe` console script remains registered under `[project.scripts]`:
+The `eigenscribe` console script also provides design-token inspection and diagnostics:
 
 ```bash
-# Run legacy design system diagnostics & theme exports
+# Run design system diagnostics & theme exports
 uv run eigenscribe doctor
 uv run eigenscribe theme --format css
 uv run eigenscribe mermaid --sample
@@ -173,8 +181,12 @@ uv add scriber-core          # or: pip install scriber-core
 eigenscribe --help
 
 # ...and import the canonical design tokens from your own code
-python -c "from scriber_core.frontend import COLOR_PALETTE, GRADIENT_PRESETS; print(len(COLOR_PALETTE))"
+python -c "from eigenscribe.frontend import COLOR_PALETTE, GRADIENT_PRESETS; print(len(COLOR_PALETTE))"
 ```
+
+### Import namespace migration
+
+The Python import namespace is now `eigenscribe`; update imports such as `from scriber_core.frontend import ...` to `from eigenscribe.frontend import ...`. This is a breaking import change for existing consumers. The installed distribution remains `scriber-core`, and the CLI remains `eigenscribe`.
 
 For detailed, step-by-step walkthroughs, see [`docs/workspace-setup-guide.md`](docs/workspace-setup-guide.md).
 
@@ -185,8 +197,8 @@ Before executing any generation loop, training pass, or asset construction, agen
 1. **Python Rules (`/house-rules/python-rules.md`)**: Forces explicit LaTeX/text derivations, checks array dimensionality boundaries to eliminate silent broadcasting traps, binds modern `np.random.default_rng()` constraints, and mandates explicit `__all__` exports.
 2. **CSS Rules (`/house-rules/css-rules.md`)**: Dictates strict, predictable flex/grid container scaffolds using the Eigenscribe high-contrast token spectrum.
 3. **End-of-Run File Consistency & Hygiene**:
-   - At the conclusion of every development pass or agent run, **all project files must be audited for mutual consistency**.
-   - When new source files, modules, CLI flags, or packages are introduced or modified, corresponding configuration files (`pyproject.toml`, `.gitignore`), documentation (`README.md`, setup guides), docstrings, and tests **must be updated immediately**.
+   - For palette or gradient changes, follow the targeted maintenance matrix in [`.junie/AGENTS.md`](.junie/AGENTS.md) and update direct consumers only; dynamic CLI views derive from the canonical dictionaries.
+   - For other changes, verify the affected configuration, documentation, public exports, and tests rather than sweeping unrelated files.
    - No orphan, out-of-sync, or undocumented artifacts may remain at the end of a run.
 
 For each repository, establish:

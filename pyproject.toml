@@ -4,16 +4,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scriber-core"
-version = "1.0.2"
+version = "2.0.0"
 description = "Deterministic workspace baseline, styling tokens, and visualization rules for scientific and development agents."
 readme = "README.md"
 license = { text = "MIT" }
 license-files = ["LICENSE"]
 authors = [
-    { name = "Scriber Labs & Eigenscribe Inc." }
+    { name = "eigenscribe" }
 ]
 maintainers = [
-    { name = "Scriber Labs & Eigenscribe Inc." }
+    { name = "eigenscribe" }
 ]
 keywords = [
     "visualization",
@@ -44,13 +44,13 @@ dependencies = [
     "matplotlib>=3.8.0",
     "seaborn>=0.13.0",
     "networkx>=3.2.0",
-    "click>=8.0.0",
+    "click>=8.5.0",
     "ipykernel>=7.3.0",
     "pyfiglet>=1.0.4",
 ]
 
 [project.scripts]
-eigenscribe = "scriber_core.cli.main:main"
+eigenscribe = "eigenscribe.cli.main:main"
 
 [project.optional-dependencies]
 dev = [
@@ -62,11 +62,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/eigenscribe/scriber-core"
-Repository = "https://github.com/eigenscribe/scriber-core"
+Homepage = "https://github.com/The-Scriber-Experience/scriber-core"
+Repository = "https://github.com/The-Scriber-Experience/scriber-core"
 Documentation = "https://scriber-core.readthedocs.io"
-"Bug Tracker" = "https://github.com/eigenscribe/scriber-core/issues"
-Changelog = "https://github.com/eigenscribe/scriber-core/blob/main/CHANGELOG.md"
+"Bug Tracker" = "https://github.com/The-Scriber-Experience/scriber-core/issues"
+Changelog = "https://github.com/The-Scriber-Experience/scriber-core/blob/main/CHANGELOG.md"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -77,7 +77,7 @@ managed = true
 package = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/scriber_core"]
+packages = ["src/eigenscribe"]
 
 [tool.uv.pip]
 universal = true

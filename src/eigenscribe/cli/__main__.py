@@ -1,7 +1,7 @@
 """
 __main__.py
 
-Package execution launcher for `python -m scriber_core.cli`.
+Package execution launcher for `python -m eigenscribe.cli`.
 Follows the gold standard entry point pattern.
 
 Author: Eigenscribe & Scriber Labs
@@ -10,7 +10,7 @@ Date: November 19, 2026
 
 from __future__ import annotations
 
-from scriber_core.cli.main import main
+from eigenscribe.cli.main import main
 
 
 if __name__ == "__main__":

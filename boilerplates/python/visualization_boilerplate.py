@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from typing import Any, Final
 
+from eigenscribe.frontend.colors import COLOR_PALETTE
+
 try:
     import seaborn as sns
     HAS_SEABORN = True
@@ -29,7 +31,7 @@ except ImportError:
     go = None
     HAS_PLOTLY = False
 
-from scriber_core.frontend.the_scriber_experience.plots.theme import (
+from eigenscribe.frontend.the_scriber_experience.plots.theme import (
     apply_cosmic_theme,
     apply_theme,
     create_eigenscribe_colormap,
@@ -96,7 +98,7 @@ def _run_smoke_test() -> None:
     fig, ax = bootstrap_figure(1, 1, figsize=(6.0, 4.0))
     x = np.linspace(0.0, 10.0, 100)
     y = np.sin(x)
-    ax.plot(x, y, label="$\sin(x)$", color="#00e8ff", lw=2.0)
+    ax.plot(x, y, label="$\sin(x)$", color=COLOR_PALETTE["node-2"], lw=2.0)
     ax.set_title("Eigenscribe Visualization Bootstrap")
     ax.set_xlabel("Time [s]")
     ax.set_ylabel("Amplitude")

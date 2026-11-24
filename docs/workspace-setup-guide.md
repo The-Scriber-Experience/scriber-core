@@ -89,7 +89,7 @@ my-package/
 As long as there is only one `__init__.py` or one `main.py` per folder, they are not considered duplicates of each other across the repository.
 
 **Examples of prohibited duplicates:**
-- `src/scriber_core/cli/messaging.py` and `src/scriber_core/frontend/messaging.py` — same basename in different directories.
+- `src/eigenscribe/cli/messaging.py` and `src/eigenscribe/frontend/messaging.py` — same basename in different directories.
 - `THE_SCRIBER_EXPERIENCE/` and `the_scriber_experience/` — case-only difference.
 - `gold-standard.py` and `gold-standard-boilerplate.py` — one name is a prefixed variant of the other; use a single canonical name.
 - `python-rules.md` and `python-rules_v1.md` — versioned suffix creates a content duplicate; update the original instead.
@@ -489,55 +489,34 @@ def validate_input_deck(config: dict[str, Any], schema_path: Path) -> None:
 
 ---
 
-## 🎨 10. Repo-Wide Hex Color Standard & Design Token Architecture
+## 🎨 10. Canonical Hex Color Standard & Design Token Architecture
 
 To ensure strict visual fidelity across CLI TrueColor output, Matplotlib/Seaborn plotting themes, dark-mode Mermaid diagrams, and CSS tokens, `scriber-core` enforces a mandatory repo-wide color standard:
 
 1. **Single Source of Truth (`COLOR_PALETTE`)**:
-   - `COLOR_PALETTE` in `src/scriber_core/frontend/colors.py` is the canonical dictionary for all named color variables across the workspace.
+   - `COLOR_PALETTE` in `src/eigenscribe/frontend/colors.py` owns all authored hex tokens. Gradients, CLI styling, and plotting themes reference these canonical values instead of defining parallel hex dictionaries.
 2. **Repo-Wide Hex Constraint**:
-   - **Constraint:** All color variables must be defined in a way that imports and uses the key names from `COLOR_PALETTE` in `src/scriber_core/frontend/colors.py` (and/or converted into canonical hex format (`#rrggbb`)).
+   - **Constraint:** Color variables must reference `COLOR_PALETTE` token keys; direct hex values are reserved for the canonical palette and caller-supplied custom colors.
    - Never define raw or arbitrary RGB integer triplets across downstream modules without a canonical hex reference.
 3. **Deterministic RGB Normalization**:
-   - The `hex_to_rgb(hex_code)` utility in `src/scriber_core/frontend/colors.py` provides deterministic conversion from hex strings to `(R, G, B)` integer tuples for ANSI escape sequence generation (`\033[38;2;R;G;Bm`).
+   - The `hex_to_rgb(hex_code)` utility in `src/eigenscribe/frontend/colors.py` provides deterministic conversion from hex strings to `(R, G, B)` integer tuples for ANSI escape sequence generation (`\033[38;2;R;G;Bm`).
 4. **Cross-Subsystem Alignment**:
    - Web / CSS design tokens: mapped directly from hex values to CSS custom properties (`--color-primary: #00e8ff`).
    - Scientific visualization: Matplotlib `rcParams` and Seaborn colormaps use hex strings directly (`axes.prop_cycle: ['#14b5ff', '#9b7dff', '#22f792', '#f78166']`).
    - Dark-mode Mermaid themes: hex codes map directly into diagram directives and node styling classes (`primaryColor: #14b5ff`).
 
+For focused updates, follow the file-by-file matrix in [`.junie/AGENTS.md`](../.junie/AGENTS.md): palette tokens belong in `colors.py` and `docs/colors-and-gradients.md`; presets belong in `gradients.py` and the same catalog. Dynamic CLI tables/lists derive from these dictionaries, so they do not normally need manual changes.
+
 ---
 
 ## 🚀 11. Distribution & PyPI Publishing Protocol
 
-For distributable libraries published to PyPI or internal registries, follow this 6-step release workflow adhering to the **COOP Packaging Guide**:
+For this repository, publishing uses GitHub Actions Trusted Publishing (OIDC), not a local API token upload. Review [`docs/PYPI_UPLOAD.md`](PYPI_UPLOAD.md) for the beginner-oriented release walkthrough and one-time PyPI/GitHub configuration. The short protocol is:
 
-1. **Local Verification**:
-   - Run all test suites and linters locally:
-     ```bash
-     pytest --cov=my_package
-     ruff check .
-     ```
-2. **CI Pipeline Pass**:
-   - Push commits to the remote repository and verify that all automated CI pipeline stages (Test, Lint, Docs) succeed.
-3. **Changelog & Version Tagging**:
-   - Update `CHANGELOG.md` with release notes and date under Keep a Changelog format.
-   - Bump version in `pyproject.toml` and `src/my_package/__init__.py`.
-   - Commit and tag: `git tag -a v1.0.0 -m "Release 1.0.0" && git push origin main --tags`.
-4. **Build Distribution**:
-   - Build clean binary wheel (`.whl`) and source distribution (`.tar.gz`) artifacts:
-     ```bash
-     uv build
-     ```
-5. **Optional TestPyPI Upload**:
-   - When introducing major metadata or dependency schema changes, validate on TestPyPI first:
-     ```bash
-     uv publish --publish-url https://test.pypi.org/legacy/
-     ```
-6. **PyPI Production Publish**:
-   - Upload distribution artifacts to PyPI:
-     ```bash
-     uv publish
-     ```
+1. Update the changelog and make `pyproject.toml` version match `src/eigenscribe/__init__.py`; frontend and CLI versions derive from the package version.
+2. Run `uv sync --extra dev`, `uv run pytest tests`, and `uv build`; push the reviewed release commit to the default branch.
+3. Push an annotated tag matching the version, for example `v2.0.0`. The workflow tests, validates the tag/version match, builds and smoke-tests artifacts, then publishes to PyPI.
+4. Manual workflow runs publish to TestPyPI only. Production publication is tag-triggered and PyPI versions cannot be overwritten.
 
 ---
 
@@ -669,7 +648,7 @@ This repository adheres to the COOP blog post standards:
 
 - [x] **Repository Structure**: `src/` layout with proper package organization
 - [x] **Packaging**: `pyproject.toml` with `hatchling` backend and PEP 621 declarative metadata
-- [x] **Versioning**: `__version__` in `src/__init__.py` with semantic versioning
+- [x] **Versioning**: `__version__` in `src/eigenscribe/__init__.py` with semantic versioning
 - [x] **Changelog**: `CHANGELOG.md` following Keep a Changelog 1.0.0 standard
 - [x] **Testing**: `tests/unit/` and `tests/func/` subdirectories with `conftest.py`
 - [x] **CLI**: Click-based CLI with thin wrapper pattern

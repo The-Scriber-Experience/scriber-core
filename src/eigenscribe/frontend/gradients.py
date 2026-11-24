@@ -1,4 +1,4 @@
-# src/scriber_core/frontend/gradients.py
+# src/eigenscribe/frontend/gradients.py
 """
 gradients.py
 
@@ -17,13 +17,7 @@ from typing import Final
 
 import sys
 
-if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
-    try:
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
-        pass
-
-from scriber_core.frontend.colors import (
+from eigenscribe.frontend.colors import (
     COLOR_PALETTE,
     Color,
     GOLDEN_RATIO_INVERSE,
@@ -36,8 +30,6 @@ __all__: list[str] = [
     "Color",
     "GOLDEN_RATIO_INVERSE",
     "GRADIENT_PRESETS",
-    "PRESETS",
-    "TSE_GRADIENTS",
     "compute_golden_ratio_stop_positions",
     "hex_to_rgb",
     "multi_gradient",
@@ -51,9 +43,9 @@ GRADIENT_PRESETS: Final[dict[str, tuple[str, ...]]] = {
     # 🐉 Signature Eigenscribe Gradient:
     "eigenscribe": (
         COLOR_PALETTE["node-2"],
+        COLOR_PALETTE["node-3"],
         COLOR_PALETTE["eigen_blue"],
-        COLOR_PALETTE["midwest_indigo"],
-        COLOR_PALETTE["node-7"],
+        COLOR_PALETTE["node-6"],
     ),
     # 🔱 Signature TSE Gradients:
     "tse-gradient-1": (
@@ -61,7 +53,7 @@ GRADIENT_PRESETS: Final[dict[str, tuple[str, ...]]] = {
         COLOR_PALETTE["reef_cyan"],
         COLOR_PALETTE["azure_splash"],
         COLOR_PALETTE["cerulean_surge"],
-        COLOR_PALETTE["harbor_blue"],
+        COLOR_PALETTE["royal_blue"],
         COLOR_PALETTE["twilight_indigo"],
         COLOR_PALETTE["dusk_violet_blue"],
         COLOR_PALETTE["cosmic_iris"],
@@ -99,6 +91,12 @@ GRADIENT_PRESETS: Final[dict[str, tuple[str, ...]]] = {
         COLOR_PALETTE["midwest_indigo"],
         COLOR_PALETTE["node-8"],
     ),
+    # 🌿 Quantum Aurora
+    "aurora": (
+        COLOR_PALETTE["sleeping_beauty"],
+        COLOR_PALETTE["success_emerald"],
+        COLOR_PALETTE["aurora_green"],
+    ),
     # ⚡ Cyberpunk Neon: Bright Cyan (#00f0ff) -> Electric Violet (#5e17eb) -> Hot Pink (#ff007b)
     "cyberpunk": (
         COLOR_PALETTE["bright_cyan"],
@@ -127,11 +125,6 @@ GRADIENT_PRESETS: Final[dict[str, tuple[str, ...]]] = {
         COLOR_PALETTE["node-7"],
     ),
 }
-
-# Legacy aliases for backward compatibility — prefer GRADIENT_PRESETS directly.
-TSE_GRADIENTS: Final[dict[str, tuple[str, ...]]] = GRADIENT_PRESETS
-PRESETS: Final[dict[str, tuple[str, ...]]] = GRADIENT_PRESETS
-
 
 # -----------------------------------------------------------------------------------------------------------
 # 1️⃣ Public API / Gradient Engine
@@ -303,9 +296,18 @@ def _normalize_color(color: Color) -> RGB:
 # -----------------------------------------------------------------------------------------------------------
 
 
+def _safe_print(text: str = "") -> None:
+    """Print without changing a redirected stream's encoding."""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+        print(text.encode(encoding, errors="replace").decode(encoding))
+
+
 def _run_smoke_test() -> None:
     """Validate all presets and gradient rendering."""
-    print("💨 Running gradients.py smoke tests...")
+    _safe_print("💨 Running gradients.py smoke tests...")
     # 1. Hex to RGB conversion
     assert hex_to_rgb("#00a6ff") == (0, 166, 255)
     assert hex_to_rgb("a855f7") == (168, 85, 247)
@@ -343,12 +345,12 @@ def _run_smoke_test() -> None:
     assert "\033[0m" in custom_rendered
 
     # 6. Print each gradient preset
-    print()
+    _safe_print()
     for preset_name, stops in GRADIENT_PRESETS.items():
         gradient = multi_gradient("████████████████████████████████████████████████████████", stops)
-        print(f"  {preset_name}: {gradient}")
+        _safe_print(f"  {preset_name}: {gradient}")
 
-    print("\n✅ gradients.py smoke tests passed.")
+    _safe_print("\n✅ gradients.py smoke tests passed.")
 
 
 # -----------------------------------------------------------------------------------------------------------
@@ -358,6 +360,9 @@ def _run_smoke_test() -> None:
 
 def main() -> None:
     """Execute module smoke tests."""
+    from eigenscribe.cli.vt_mode import enable_vt_mode
+
+    enable_vt_mode()
     _run_smoke_test()
 
 

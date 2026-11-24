@@ -3031,7 +3031,7 @@ wheels = [
 
 [[package]]
 name = "scriber-core"
-version = "1.0.1"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "click" },
@@ -3065,7 +3065,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "build", marker = "extra == 'dev'", specifier = ">=1.0.0" },
-    { name = "click", specifier = ">=8.0.0" },
+    { name = "click", specifier = ">=8.5.0" },
     { name = "ipykernel", specifier = ">=7.3.0" },
     { name = "ipykernel", marker = "extra == 'dev'", specifier = ">=6.0.0" },
     { name = "matplotlib", specifier = ">=3.8.0" },

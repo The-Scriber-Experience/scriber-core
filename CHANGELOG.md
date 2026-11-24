@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added the `aurora_green`, `green_pond`, and `sleeping_beauty` palette tokens and the `aurora` multi-stop gradient preset.
+
+### Changed
+- Renamed the public Python import namespace from `scriber_core` to `eigenscribe` while retaining `scriber-core` as the distribution name and `eigenscribe` as the console command. This is a breaking import change for existing consumers.
+- Added `python -m eigenscribe` as a root module launcher and retained `python -m eigenscribe.cli` as an alternative CLI launcher.
+
+### Fixed
+- Corrected CLI message and palette colors to use canonical TrueColor values, fixed gradient preview and banner options, and enabled Windows VT mode with pointer-sized console handles.
+- Configured UTF-8 for Windows MSYS pipe output unless `PYTHONIOENCODING` is explicitly set, and warned when an MSYS terminal uses Click older than 8.5; documented UCRT64 activation and separate-environment guidance.
+
 ## [1.0.2] - 2026-11-23
 
 ### Added
