@@ -39,6 +39,9 @@
   - [x] Verified COOP blog HTML files are properly located in `docs/COOP_blog/`.
 - [ ] Create pypi project named `scriber-core`.
 - [ ] Install `scriber-core` as a dependency in `@.junie/AGENTS.md`.
+- [ ] Diagnose and verify CLI ANSI/TrueColor rendering in Git Bash.
+  - [ ] Reproduce with the installed `eigenscribe` command in an interactive Git Bash terminal.
+  - [ ] Confirm help, gradients, and color swatches render correctly after any fix.
 ---
 - [ ] Create a minimal theme generator `src` folder using best practices and includes a way to...
   - [ ] Create repo-specific color pallette and gradient generators using `@src/frontend/colors.py` and 

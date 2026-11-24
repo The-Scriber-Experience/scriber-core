@@ -1,15 +1,15 @@
 """
 colors.py
 
-Gold Standard color module for the eigenscribe frontend: centralized color
-definitions, palette groups, design tokens, and the golden ratio gradient
+Gold Standard color module for the eigenscribe frontend: canonical color
+tokens, design values, and the golden ratio gradient
 interpolation engine for CLI formatting, Matplotlib plotting, mermaid diagrams,
 and UI styling.
 
 The conceptual story follows the repository's 'Rule of Thumb':
-What exists (the palettes) -> what you're allowed to call (hex_to_rgb and the
+What exists (the palette) -> what you're allowed to call (hex_to_rgb and the
 gradient API) -> how it works (validation, easing, interpolation) ->
-proof it works (per-category gradient rendering).
+proof it works (palette gradient rendering).
 
 Author: Eigenscribe
 Review status: Reviewed and maintained by Eigenscribe.
@@ -25,6 +25,8 @@ import sys
 from collections.abc import Sequence
 from typing import Final, TypeAlias
 
+from eigenscribe.frontend.colors import COLOR_PALETTE
+
 if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -34,7 +36,6 @@ if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
 __all__: list[str] = [
     "RGB",
     "Color",
-    "COLOR_GROUPS",
     "COLOR_PALETTE",
     "GOLDEN_RATIO",
     "PHI",
@@ -61,114 +62,8 @@ GOLDEN_RATIO_INVERSE: Final[float] = GOLDEN_RATIO - 1.0  # 1/φ ≈ 0.6180339887
 
 # -----------------------------------------------------------------------------------------------------------
 # 1️⃣ Core definitions (what exists)
-#
-# COLOR_GROUPS is the source of truth, grouped by hue family; COLOR_PALETTE is
-# derived from it (insertion order preserved). Semantic/CLI colors are annotated
-# in comments.
+# COLOR_PALETTE is imported from the package and remains the only authored hex palette.
 # -----------------------------------------------------------------------------------------------------------
-
-COLOR_GROUPS: Final[dict[str, dict[str, str]]] = {
-    "Greens & Teals": {
-        "deep_pine": "#071a12",
-        "forest_teal": "#064e38",
-        "pine": "#059669",
-        "success_emerald": "#10b981",  # ⌨️ cli status color: success
-        "ibm_green": "#309592",
-        "deep_green": "#038b00",
-        "neon_green": "#31ff40",
-        "bright_chartreuse": "#70e000",
-        "junie_lime": "#a7c957",
-        "pale_mint": "#b4ffcf",
-        "tropical_teal": "#03e8bd",
-    },
-    "Cyans & Light Blues": {
-        "electric_lagoon": "#1ef6eb",
-        "electric_cyan": "#00ffee",  # 🌈 tse-gradient-1
-        "pure_cyan": "#00ffff",
-        "bright_cyan": "#00f0ff",  # 🐉 tse-cyan
-        "vivid_cyan": "#00e8ff",  # 🌈 tse-gradient-2
-        "reef_cyan": "#1ed9f6",
-        "sky_cyan": "#4cc9f0",
-        "ibm_cyan": "#2ca9e6",
-        "sky_info": "#38bdf8",  # ⌨️ info
-        "ice_blue": "#b8f6ff",
-    },
-    "Blues & Indigos": {
-        "midnight_navy": "#06152b",
-        "deep_ocean_blue": "#003b73",
-        "vivid_blue": "#0070eb",
-        "eigen_blue": "#008eff",
-        "cerulean_surge": "#1e8af6",
-        "skyline_blue": "#0a95eb",
-        "azure_splash": "#1eb2f6",
-        "vivid_sky_blue": "#14b5ff",  # 🌈 tse-gradient-1
-        "electric_blue": "#00a6ff",
-        "sky_blue": "#3a98ff",
-        "harbor_blue": "#1e64f6",
-        "strong_blue": "#0355e8",
-        "twilight_indigo": "#1e3bf6",
-        "dusk_violet_blue": "#291ef6",
-        "ibm_indigo": "#4361ee",
-        "periwinkle_blue": "#5280ff",
-        "midwest_indigo": "#6f78fa",
-        "deep_indigo": "#3a0ca3",
-    },
-    "Purples & Violets": {
-        "deep_plum": "#120a24",
-        "dark_violet": "#3b176e",
-        "cosmic_iris": "#501ef6",
-        "electric_violet": "#5e17eb",
-        "bright_violet": "#7c3aed",
-        "nebula_purple": "#781ef6",
-        "ibm_purple": "#844ccc",
-        "bright_purple": "#a855f7",
-        "royal_purple": "#7209b7",
-        "neon_orchid": "#a01ef6",
-        "pale_lilac": "#d8b4fe",
-    },
-    "Pink & Berries": {
-        "black_cherry": "#210817",
-        "dark_berry": "#7c174f",
-        "deep_rose": "#ad1457",
-        "vivid_pink": "#f72585",
-        "ibm_pink": "#fe28a2",
-        "bright_pink": "#ff40a1",
-        "rose_pink": "#ff66b3",
-        "soft_rose": "#ff76a1",
-        "pale_orchid_pink": "#ffb4f6",
-    },
-    "Magentas & Reds": {
-        "bright_magenta": "#ff00c3",
-        "hot_pink": "#ff007b",
-        "error_crimson": "#d7263d",  # ⌨️ error
-    },
-    "Oranges & Corals": {
-        "dusty_peach": "#e7a697",
-        "soft_coral": "#f77f64",
-        "peach_coral": "#f79764",
-        "tangerine": "#ff8855",
-        "coral_orange": "#ff783d",
-        "apricot": "#ff9d57",
-        "golden_amber": "#feb639",
-        "warning_amber": "#f7c548",  # ⌨️ warning
-    },
-    "Neutrals": {
-        "ibm_black": "#161616",
-        "ibm_gray": "#262625",
-        "charcoal": "#1e293b",
-        "granite": "#264653",
-        "slate": "#64748b",
-        "ibm_white": "#f4f4f4",
-        "ghost_white": "#f8fafc",
-    },
-}
-
-# Flat palette derived from COLOR_GROUPS (single source of truth, no duplication).
-COLOR_PALETTE: Final[dict[str, str]] = {
-    name: hex_value
-    for group in COLOR_GROUPS.values()
-    for name, hex_value in group.items()
-}
 
 
 # -----------------------------------------------------------------------------------------------------------
@@ -182,7 +77,7 @@ def hex_to_rgb(hex_color: str) -> RGB:
     Parameters
     ----------
     hex_color : str
-        Hex color string (e.g. '#00a6ff' or '00a6ff').
+        Six-digit hexadecimal color string, typically from COLOR_PALETTE.
 
     Returns
     -------
@@ -434,10 +329,10 @@ def _normalize_color(color: Color) -> RGB:
 
 
 def run_smoke_test() -> bool:
-    """Validate the color definitions and render one gradient per category.
+    """Validate canonical color tokens and render one gradient from the palette.
 
-    Every hex value in COLOR_PALETTE is checked for validity, then each color
-    group in COLOR_GROUPS is rendered as its own smooth gradient line.
+    Every palette hex value is checked for validity before the complete palette is
+    rendered as a smooth gradient line.
 
     Returns
     -------
@@ -454,11 +349,10 @@ def run_smoke_test() -> bool:
             is_valid = False
             print(f"  ✗ Channel out of range for {name}: {hex_value}")
 
-    # Render one gradient per color category
+    # Render the canonical palette
     print()
-    for category, colors in COLOR_GROUPS.items():
-        gradient = render_golden_ratio_gradient(list(colors.values()))
-        print(f"  {category}: {gradient}")
+    gradient = render_golden_ratio_gradient(tuple(COLOR_PALETTE.values()))
+    print(f"  COLOR_PALETTE: {gradient}")
 
     print("\n✅💨Smoke tests passed." if is_valid else "\nSmoke tests FAILED.")
     return is_valid

@@ -6,12 +6,10 @@
 
 ## 📌 Repository Identity
 
-**Package:** `scriber-core` (v1.0.0)  
+**Distribution:** `scriber-core` (v2.0.0)
 **Purpose:** Canonical workspace baseline for Eigenscribe Inc. and Scriber Labs, providing deterministic CLI styling tools, TrueColor gradient engines, design tokens, visualization themes, and the Scriber Experience (TSE) subsystem. Distributed via Git submodules, template cloning, or installable Python packaging.
 
-**Packages:** Two installable packages under `src/`:
-- **`src/frontend`** — Color palette (`COLOR_PALETTE`), gradient engine (`GRADIENT_PRESETS`), TSE styling subsystems (semantic roles, plots, Mermaid themes).
-- **`src/cli`** — CLI suite with TrueColor gradient banners, palette table renderer, semantic messaging, and command catalog.
+**Import package:** One installable package under `src/eigenscribe/`, with `frontend` and `cli` subpackages.
 
 **Key Files:**
 | File | Purpose |
@@ -20,6 +18,8 @@
 | [`CHANGELOG.md`](CHANGELOG.md) | Version history following Keep a Changelog 1.0.0. |
 | [`TODO.md`](TODO.md) | Current task backlog, deferred work, and implementation roadmap. |
 | [`pyproject.toml`](pyproject.toml) | PEP 621 metadata, `hatchling` build backend, `uv` tooling config, dependencies, and CLI entry points. |
+| [`docs/colors-and-gradients.md`](docs/colors-and-gradients.md) | Human-readable token and preset catalog synchronized with canonical dictionaries. |
+| [`docs/PYPI_UPLOAD.md`](docs/PYPI_UPLOAD.md) | Repository-specific Trusted Publishing and tagged release walkthrough. |
 
 ---
 
@@ -37,10 +37,10 @@ All paths are relative to the project root. Agents must consult these before any
 | `docs/COOP_blog` | `docs/COOP_blog/The COOP Click Command line interfaces · The COOP Blog.html` | Click-based CLI design, thin-wrapper command architecture, context routing, and CliRunner testing. |
 | `docs/COOP_blog` | `docs/COOP_blog/The Coop Cactus branching model · The COOP Blog.html` | Single-trunk Cactus branching model, release stabilization branches, hotfixes, and annotated tag governance. |
 | `docs/COOP_blog` | `docs/COOP_blog/Using the json-SCHEMA standard for scientific applications_ · The COOP Blog.html` | JSON Schema validation, fail-fast boundary enforcement, and parameter self-documentation for scientific input decks. |
-| `src/frontend` | `src/frontend/the_scriber_experience/style/gradient_presets.py` | ANSI TrueColor multi-stop linear RGB gradient engine and color-stop presets. |
-| `src/frontend` | `src/frontend/colors.py` | ANSI 256-color terminal palette, semantic level messaging, and CLI styling helpers. |
+| `src/eigenscribe/frontend` | `src/eigenscribe/frontend/gradients.py` | ANSI TrueColor multi-stop linear RGB gradient engine and color-stop presets. |
+| `src/eigenscribe/frontend` | `src/eigenscribe/frontend/colors.py` | Canonical named palette, semantic roles, and deterministic hex/RGB helpers. |
 | `boilerplates` | `../boilerplates/python/cli_boilerplate.py` | Gold standard reference script template implementing mathematical simulation, explicit type annotations, shape assertions, deterministic RNG, and smoke testing. |
-| `src/frontend` | `src/frontend/the_scriber_experience/plots/theme.py` | Generalizable visualization bootstrapping script for Matplotlib, Pyplot, and Seaborn with high-contrast curves, deep cosmic void palettes, and 6-style heatmaps. |
+| `src/eigenscribe/frontend` | `src/eigenscribe/frontend/the_scriber_experience/plots/theme.py` | Generalizable visualization bootstrapping script for Matplotlib, Pyplot, and Seaborn with high-contrast curves, deep cosmic void palettes, and 6-style heatmaps. |
 | `boilerplates` | `boilerplates/css/tse-boilerplate.css` | Gold standard reference stylesheet implementing the full 4-layer taxonomy, CSS tokens, cosmic radial gradients, Sephirah labels, glassmorphism components, and responsive layouts. |
 | `boilerplates` | `boilerplates/notebooks/visuals-boilerplate.ipynb` | Gold standard reference notebook template for scientific visualization, NetworkX graph topologies, dashboards, and design token / colormap palettes. |
 | `.junie/skills` | `.junie/skills/cosmic-visual-styling/SKILL.md` | Workspace skill for applying the Sephirah / cosmic visual themes, color tokens, and glassmorphic UI components. |
@@ -50,33 +50,39 @@ All paths are relative to the project root. Agents must consult these before any
 ## 🔧 Repo-Specific Overrides & Constraints
 
 ### Package Structure
-- Two packages: `src/frontend` and `src/cli`. Both must maintain explicit `__all__` in their `__init__.py`.
-- Runtime version is exported in `src/__init__.py` as `__version__: Final[str] = "1.0.0"`.
-- CLI entry point: `eigenscribe = "cli.main:main"` in `pyproject.toml` under `[project.scripts]`.
-- CLI is also runnable via `python -m cli` (see `src/cli/__main__.py`).
+- One installable package: `src/eigenscribe/`, with `frontend` and `cli` subpackages. Public package initializers maintain explicit `__all__` exports.
+- The single runtime version source is `src/eigenscribe/__init__.py`; `frontend.__version__` and `cli.branding.CLI_VERSION` must derive from it.
+- CLI entry point: `eigenscribe = "eigenscribe.cli.main:main"` in `pyproject.toml` under `[project.scripts]`.
+- CLI launchers: `python -m eigenscribe` and `python -m eigenscribe.cli`.
 
 ### Color Palette Constraint
-- **Single source of truth:** `COLOR_PALETTE` in `src/frontend/colors.py` is the canonical dictionary for all named color variables across the repository.
+- **Single source of truth:** `COLOR_GROUPS` in `src/eigenscribe/frontend/colors.py` owns authored tokens; `COLOR_PALETTE` is derived from it and is the canonical lookup for downstream consumers.
 - All color variables must reference valid key names from `COLOR_PALETTE` or be defined as canonical 6-digit hex (`#rrggbb`).
 - Never hardcode raw or inconsistent RGB values in downstream modules without a canonical hex reference.
-- Use `hex_to_rgb()` from `src/frontend/colors.py` for deterministic hex-to-RGB conversion for ANSI escapes.
+- Use `hex_to_rgb()` from `src/eigenscribe/frontend/colors.py` for deterministic hex-to-RGB conversion for ANSI escapes.
 
 ### Gradient Engine
-- Multi-stop gradients in `src/frontend/gradients.py` scale keyframe segments by the Golden Ratio ($\phi \approx 1.618$).
+- Multi-stop gradients in `src/eigenscribe/frontend/gradients.py` scale keyframe segments by the Golden Ratio ($\phi \approx 1.618$).
 - Presets are defined in `GRADIENT_PRESETS` and should be extended rather than duplicated.
 
 ### Test Structure
 - Unit tests: `tests/unit/test_*.py` (isolated module tests).
 - Functional tests: `tests/func/test_*.py` (CLI end-to-end workflows and integration scenarios).
 - Shared fixtures: `tests/conftest.py`.
-- Target **70%+ coverage** on `src/frontend` and `src/cli`.
+- Target **70%+ coverage** on `src/eigenscribe/frontend` and `src/eigenscribe/cli`.
 
 ### Documentation (When Applicable)
 - Sphinx + Read the Docs + Diátaxis documentation (`docs/source/`, `.readthedocs.yaml`) is **not yet set up** for this repository. When documentation infrastructure is added, follow the universal guidelines in the system prompt (Section 4.5).
 - `README.md` and `CHANGELOG.md` serve as the primary documentation until Sphinx is configured.
 
 ### Sublime Text Theme
-- The `sublime-theme/` directory contains a Sublime Text 4 package (theme, color scheme, PreTeXt syntax & snippets). Keep its color scheme synchronized with `COLOR_PALETTE` in `src/frontend/colors.py`.
+- The `sublime-theme/` directory contains a Sublime Text 4 package (theme, color scheme, PreTeXt syntax & snippets). Update its color scheme only when a palette token is intentionally mapped to an editor scope; do not copy every palette addition into it.
+
+### Targeted Color & Gradient Update Matrix
+- **Adding or changing a palette token:** edit `COLOR_GROUPS` in `src/eigenscribe/frontend/colors.py`; update the matching entry and count in `docs/colors-and-gradients.md`; add/update validity and reference-doc assertions in `tests/unit/test_frontend_styling.py`.
+- **Adding or changing a gradient preset:** edit `GRADIENT_PRESETS` in `src/eigenscribe/frontend/gradients.py`; update its stop sequence in `docs/colors-and-gradients.md`; add/update preset and CLI-list assertions in `tests/unit/test_frontend_styling.py` and `tests/unit/test_cli.py`.
+- **Only update additional files when directly affected:** change `sublime-theme/EigenScribe/color-schemes/EigenScribe.sublime-color-scheme` only for an intentional editor-scope mapping. The CLI palette table and gradient preset list are generated from the canonical dictionaries and normally need no manual edits.
+- **After the focused edits:** run the targeted tests, then the broader suite when warranted; do not run a repository-wide color/gradient sweep by default.
 
 ---
 
